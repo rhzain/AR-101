@@ -18,6 +18,7 @@ public class PlacementManager : MonoBehaviour
     public LL1GameManager ll1GameManager;
 
     private ARRaycastManager raycastManager;
+    private ARPlaneManager planeManager;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
     private bool isPlaced = false;
@@ -25,6 +26,7 @@ public class PlacementManager : MonoBehaviour
     void Awake()
     {
         raycastManager = GetComponent<ARRaycastManager>();
+        planeManager   = GetComponent<ARPlaneManager>();
     }
 
     void Update()
@@ -42,10 +44,13 @@ public class PlacementManager : MonoBehaviour
             pose.rotation = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
 
             GameObject meja = Instantiate(mejaPrefab, pose.position, pose.rotation);
-            meja.SetActive(true); // Pastikan meja aktif meskipun prefab aslinya mati
+            meja.SetActive(true);
             Debug.Log("Meja di-spawn");
 
             isPlaced = true;
+
+            // Hentikan plane detection dan sembunyikan semua plane
+            StopPlaneDetection();
 
             // MathL1: pakai GameManager
             if (ml1GameManager != null)
@@ -56,15 +61,12 @@ public class PlacementManager : MonoBehaviour
             // MathL2: pakai ML2GameManager
             else if (ml2GameManager != null)
             {
-                // Cari DropZone & AppleBasket di dalam meja yang baru di-spawn
-                // (Ini penting! Referensi runtime, bukan dari prefab statis)
                 DropZone spawnedDropZone = meja.GetComponentInChildren<DropZone>(true);
                 AppleBasket spawnedBasket = meja.GetComponentInChildren<AppleBasket>(true);
 
                 if (spawnedDropZone != null)
                 {
                     ml2GameManager.dropZone = spawnedDropZone;
-                    // Set ketinggian permukaan meja untuk semua apel yang akan di-drag
                     DraggableApple.TableSurfaceY = spawnedDropZone.transform.position.y;
                     Debug.Log($"TableSurfaceY diset ke: {DraggableApple.TableSurfaceY}");
                 }
@@ -75,7 +77,6 @@ public class PlacementManager : MonoBehaviour
                     ml2GameManager.appleBasket = spawnedBasket;
                 else
                     Debug.LogWarning("PlacementManager: AppleBasket tidak ditemukan di dalam meja yang di-spawn!");
-
 
                 ml2GameManager.StartGame();
             }
@@ -88,7 +89,6 @@ public class PlacementManager : MonoBehaviour
                 if (sourceArea != null)
                 {
                     ll1GameManager.sourceAreaCenter = sourceArea;
-                    // Gunakan posisi Y SourceArea yang sudah diatur di atas permukaan meja
                     DraggableCard.TableSurfaceY = sourceArea.position.y;
                     Debug.Log($"TableSurfaceY (Literacy) = {DraggableCard.TableSurfaceY}");
                 }
@@ -103,6 +103,26 @@ public class PlacementManager : MonoBehaviour
                 ll1GameManager.StartGame();
             }
         }
+    }
+
+    /// <summary>
+    /// Matikan ARPlaneManager agar tidak menscan area baru,
+    /// dan sembunyikan semua visualisasi plane yang sudah terdeteksi.
+    /// </summary>
+    private void StopPlaneDetection()
+    {
+        if (planeManager == null) return;
+
+        // Sembunyikan semua plane yang sudah terdeteksi
+        foreach (ARPlane plane in planeManager.trackables)
+        {
+            plane.gameObject.SetActive(false);
+        }
+
+        // Matikan ARPlaneManager agar tidak menscan area baru
+        planeManager.enabled = false;
+
+        Debug.Log("[PlacementManager] Plane detection dimatikan.");
     }
 
     private bool TryGetTapPosition(out Vector2 position)
@@ -134,4 +154,4 @@ public class PlacementManager : MonoBehaviour
         return true;
 #endif
     }
-}
+}

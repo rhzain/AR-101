@@ -80,14 +80,21 @@ public class DraggableCard : MonoBehaviour
         if (cam == null) cam = Camera.main;
         if (cam == null) return;
 
+        // Cek release LEBIH DULU sebelum cek posisi pointer.
+        // Di mobile, saat jari dilepas touch.isPressed sudah false sehingga
+        // TryGetPointerPosition() gagal → StopDrag() tidak pernah dipanggil.
+        if (isDragging && WasPointerReleasedThisFrame())
+        {
+            StopDrag();
+            return;
+        }
+
         if (!TryGetPointerPosition(out Vector2 pointerPos)) return;
 
         if (!isDragging && WasPointerPressedThisFrame())
             TryStartDrag(pointerPos);
         else if (isDragging && IsPointerPressed())
             Drag(pointerPos);
-        else if (isDragging && WasPointerReleasedThisFrame())
-            StopDrag();
     }
 
     // ─── Drag Logic ───────────────────────────────────────────
@@ -185,8 +192,17 @@ public class DraggableCard : MonoBehaviour
     // ─── Input Helpers ────────────────────────────────────────
     private bool TryGetPointerPosition(out Vector2 pos)
     {
-        if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
-        { pos = Touchscreen.current.primaryTouch.position.ReadValue(); return true; }
+        // Touchscreen: baca posisi terakhir baik saat pressed maupun tidak
+        // (ReadValue() tetap valid meski jari sudah diangkat di frame yang sama)
+        if (Touchscreen.current != null)
+        {
+            var touch = Touchscreen.current.primaryTouch;
+            if (touch.press.isPressed || touch.press.wasReleasedThisFrame)
+            {
+                pos = touch.position.ReadValue();
+                return true;
+            }
+        }
         if (Mouse.current != null)
         { pos = Mouse.current.position.ReadValue(); return true; }
         pos = default; return false;

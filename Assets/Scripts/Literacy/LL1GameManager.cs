@@ -28,11 +28,10 @@ public class LL1GameManager : MonoBehaviour
     public float itemGap = 0.015f;
 
     [Header("UI")]
-    public TextMeshProUGUI questionText;
-    public TextMeshProUGUI roundText;
-    public TextMeshProUGUI feedbackText;
-    public Button submitButton;
-    public Button retryButton;
+    // UI kini dikelola oleh LL1UIManager — pasang di Inspector
+    // (kosongkan field ini, referensi diambil otomatis)
+
+    private LL1UIManager uiManager;
 
     // ─── Data Soal ────────────────────────────────────────────
     private struct Question
@@ -80,17 +79,8 @@ public class LL1GameManager : MonoBehaviour
     // ─── Lifecycle ────────────────────────────────────────────
     void Start()
     {
-        if (submitButton != null)
-        {
-            submitButton.onClick.AddListener(SubmitAnswer);
-            submitButton.gameObject.SetActive(false);
-        }
-        if (retryButton != null)
-        {
-            retryButton.onClick.AddListener(RestartGame);
-            retryButton.gameObject.SetActive(false);
-        }
-        if (feedbackText != null) feedbackText.text = "";
+        uiManager = FindFirstObjectByType<LL1UIManager>();
+        if (uiManager != null) uiManager.ResetUI();
     }
 
     // ─── Game Flow ────────────────────────────────────────────
@@ -112,8 +102,7 @@ public class LL1GameManager : MonoBehaviour
                 // Bagian 1 selesai → lanjut ke Bagian 2 (Susun Kalimat)
                 currentPhase = GamePhase.Sentence;
                 currentRound = 0;
-                if (feedbackText != null) feedbackText.text = "Bagian 2: Susun Kalimat!";
-                if (roundText != null) roundText.text = "";
+                if (uiManager != null) uiManager.ShowTransition("Bagian 2: Susun Kalimat!");
                 StartCoroutine(TransitionDelay());
                 return;
             }
@@ -132,22 +121,16 @@ public class LL1GameManager : MonoBehaviour
             ? GetLetters(q.answer)
             : q.answer.Split(' ');
 
-        if (questionText != null)
-            questionText.text = q.isWord
-                ? "Susun huruf-huruf menjadi kata!"
-                : $"Susun kalimat yang benar!";
+        string questionStr = q.isWord ? "Susun huruf-huruf menjadi kata!" : "Susun kalimat yang benar!";
+        string roundInfo   = $"Bagian {(currentPhase == GamePhase.Spell ? 1 : 2)}\nSoal {currentRound} dari {ROUNDS_PER_PHASE}";
 
-        string phaseLabel = currentPhase == GamePhase.Spell ? "Kata" : "Kalimat";
-        if (roundText != null)
-            roundText.text = $"Bagian {(currentPhase == GamePhase.Spell ? 1 : 2)} - Soal {currentRound}/{ROUNDS_PER_PHASE}";
-        if (feedbackText != null)
-            feedbackText.text = "";
+        if (uiManager != null)
+            uiManager.ShowQuestion(questionStr, roundInfo);
 
         SpawnCards(tokens);
         SpawnSlots(tokens.Length);
 
         questionActive = true;
-        if (submitButton != null) submitButton.gameObject.SetActive(true);
 
         Debug.Log($"[{currentPhase}] Ronde {currentRound}: '{q.answer}' ({tokens.Length} token)");
     }
@@ -180,18 +163,13 @@ public class LL1GameManager : MonoBehaviour
         }
 
         questionActive = false;
-        if (submitButton != null) submitButton.gameObject.SetActive(false);
 
-        if (playerAnswer == correctAnswer)
-        {
-            correctAnswers++;
-            if (feedbackText != null) feedbackText.text = "Benar!";
-        }
-        else
-        {
-            string display = q.isWord ? correctAnswer : q.answer;
-            if (feedbackText != null) feedbackText.text = $"Salah. Jawaban: {display}";
-        }
+        bool isCorrect = (playerAnswer == correctAnswer);
+        if (isCorrect) correctAnswers++;
+
+        string displayAnswer = q.isWord ? correctAnswer : q.answer;
+        if (uiManager != null)
+            uiManager.ShowFeedback(isCorrect, displayAnswer);
 
         StartCoroutine(NextQuestionDelay());
     }
@@ -205,16 +183,14 @@ public class LL1GameManager : MonoBehaviour
     void ShowFinalResult()
     {
         ClearSpawnedObjects();
-        if (questionText != null)  questionText.text  = "";
-        if (roundText != null)     roundText.text     = "Selesai!";
-        if (feedbackText != null)  feedbackText.text  = $"{correctAnswers}/{ROUNDS_PER_PHASE * 2} Benar";
-        if (submitButton != null)  submitButton.gameObject.SetActive(false);
-        if (retryButton != null)   retryButton.gameObject.SetActive(true);
+        int total = ROUNDS_PER_PHASE * 2;
+        if (uiManager != null)
+            uiManager.ShowFinalResult(correctAnswers, total);
+        Debug.Log($"[LL1GameManager] GAME OVER - Benar: {correctAnswers}/{total}");
     }
 
     public void RestartGame()
     {
-        if (retryButton != null) retryButton.gameObject.SetActive(false);
         StartGame();
     }
 
