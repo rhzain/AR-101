@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/HomePage.unity
+    guid: 44bf099a1d3899341931cd1962ba1692
+  - enabled: 1
+    path: Assets/Scenes/LoginScene.unity
+    guid: 4601e360ffb44aa4daa79e4f8ee538fa
+  - enabled: 1
+    path: Assets/Scenes/HomeScene.unity
+    guid: 3487cec711a814f4789ac4ee3b757817
+  - enabled: 1
+    path: Assets/Scenes/CardScan.unity
+    guid: 66cfcc566ff06f140ab0bb28ae53ff40
+  - enabled: 1
+    path: Assets/Scenes/MathL1.unity
+    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/LiteracyL1.unity
+    guid: c61d17c8ae8a57a40a0406f78fdc5902
+  - enabled: 1
+    path: Assets/Scenes/MathL2.unity
+    guid: 810e7492c85477e42a918698758bdd27
+  - enabled: 1
+    path: Assets/Scenes/LiteracyLevel.unity
+    guid: 9d2a834f47805944ebfa6b915bb8efd1
+  - enabled: 1
+    path: Assets/Scenes/MathLevel.unity
+    guid: b56c24b26eb6e084a95c697fd503f489
+  m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 3ad47cb40d15ccd40987bda6e6aa054a, type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: e1eb8eb4aeb52034bb1c80b78488a3b2, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 4361df633206c3446b527c6220f0a0c9, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 36665b977849af34bad69ace54d78537, type: 2}
+  m_UseUCBPForAssetBundles: 0
