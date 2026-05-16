@@ -4,6 +4,11 @@ public class ML1GameManager : MonoBehaviour
 {
     public GameObject applePrefab;
 
+    [Tooltip("Radius area scatter apel di setiap sisi meja (meter)")]
+    public float spawnRadius = 0.25f;
+    [Tooltip("Offset tinggi apel di atas permukaan meja saat spawn (meter)")]
+    public float spawnHeightOffset = 0.05f;
+
     private GameObject currentMeja;
     public int applesOnLeft;
     public int applesOnRight;
@@ -100,17 +105,46 @@ public class ML1GameManager : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            Vector3 randomOffset = new Vector3(
-                Random.Range(-0.3f, 0.3f),
-                0,
-                Random.Range(-0.3f, 0.3f)
-            );
+            // Offset menggunakan local axis spawnArea agar sejajar rotasi meja
+            float rx = Random.Range(-spawnRadius, spawnRadius);
+            float rz = Random.Range(-spawnRadius, spawnRadius);
 
-            Vector3 spawnPos = spawnArea.position + randomOffset;
+            Vector3 spawnPos = spawnArea.position
+                             + spawnArea.right   * rx
+                             + spawnArea.forward * rz
+                             + spawnArea.up      * spawnHeightOffset;
 
-            // Spawn buah sebagai child dari spawnArea
-            Instantiate(applePrefab, spawnPos, Quaternion.identity, spawnArea);
+            // Rotasi ikut meja agar tidak miring di AR
+            Instantiate(applePrefab, spawnPos, spawnArea.rotation, spawnArea);
         }
+    }
+
+    // Visualisasi area scatter di Scene view
+    void OnDrawGizmosSelected()
+    {
+        if (currentMeja == null) return;
+        Transform left  = currentMeja.transform.Find("Left");
+        Transform right = currentMeja.transform.Find("Right");
+
+        Gizmos.color = new Color(0f, 1f, 0f, 0.4f);
+        if (left  != null) DrawLocalSquare(left,  spawnRadius);
+        if (right != null) DrawLocalSquare(right, spawnRadius);
+    }
+
+    void DrawLocalSquare(Transform t, float radius)
+    {
+        // Gambar persegi berdasarkan local axis agar sejajar rotasi meja
+        Vector3 c  = t.position;
+        Vector3 r  = t.right   * radius;
+        Vector3 f  = t.forward * radius;
+        Vector3 p0 = c - r - f;
+        Vector3 p1 = c + r - f;
+        Vector3 p2 = c + r + f;
+        Vector3 p3 = c - r + f;
+        Gizmos.DrawLine(p0, p1);
+        Gizmos.DrawLine(p1, p2);
+        Gizmos.DrawLine(p2, p3);
+        Gizmos.DrawLine(p3, p0);
     }
 
     // Method untuk handle user memilih sisi kiri

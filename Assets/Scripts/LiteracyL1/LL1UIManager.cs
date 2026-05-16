@@ -3,16 +3,15 @@ using TMPro;
 using UnityEngine.UI;
 
 /// <summary>
-/// Mengelola semua tampilan UI untuk Math Level 2.
-/// Pasang ke GameObject UI Manager di scene MathLevel2.
+/// Mengelola semua tampilan UI untuk Literacy Level 1.
+/// Pasang ke GameObject UI Manager di scene LiteracyLevel1.
 /// </summary>
-public class ML2UIManager : MonoBehaviour
+public class LL1UIManager : MonoBehaviour
 {
     [Header("Teks UI")]
     public TextMeshProUGUI questionText;
     public TextMeshProUGUI roundText;
     public TextMeshProUGUI feedbackText;
-    public TextMeshProUGUI appleCountText;
 
     [Header("Tombol")]
     public Button submitButton;
@@ -27,17 +26,17 @@ public class ML2UIManager : MonoBehaviour
 
     [Header("Result Panel")]
     public ResultPanel resultPanel;
-    public Sprite[] resultSprites; // 6 gambar: index 0-5 benar
+    public Sprite[] resultSprites; // index = jumlah benar (0 - 10, total 2 bagian x 5 soal)
 
-    private ML2GameManager gameManager;
+    private LL1GameManager gameManager;
 
     void Start()
     {
-        gameManager = FindFirstObjectByType<ML2GameManager>();
+        gameManager = FindFirstObjectByType<LL1GameManager>();
 
         if (resultPanel != null) resultPanel.Hide();
 
-        // Setup tombol submit
+        // Setup tombol Submit
         if (submitButton != null)
         {
             submitButton.onClick.AddListener(() =>
@@ -96,39 +95,40 @@ public class ML2UIManager : MonoBehaviour
         if (canvasRecap != null)  canvasRecap.SetActive(true);
     }
 
-    // ─── Dipanggil oleh ML2GameManager ────────────────────────
+    // ─── Dipanggil oleh LL1GameManager ───────────────────────
 
-    /// <summary>Tampilkan soal baru di UI.</summary>
-    public void ShowQuestion(string questionDisplay, int currentRound, int maxRounds)
+    /// <summary>Tampilkan soal baru — aktifkan canvas soal jika belum aktif.</summary>
+    public void ShowQuestion(string question, string roundInfo)
     {
         if (resultPanel != null) resultPanel.Hide();
 
         // State 2: header + soal aktif
         ShowGameplayCanvas();
 
-        if (questionText != null)   questionText.text = questionDisplay;
-        if (roundText != null)      roundText.text = $"Soal {currentRound}/{maxRounds}";
-        if (feedbackText != null)   feedbackText.text = "Susun apel sejumlah jawaban!";
-        if (appleCountText != null) appleCountText.text = "Jumlah: 0";
-        if (submitButton != null)   submitButton.gameObject.SetActive(true);
+        if (questionText != null) { questionText.gameObject.SetActive(true); questionText.text = question; }
+        if (roundText != null)    { roundText.gameObject.SetActive(true);    roundText.text = roundInfo; }
+        if (feedbackText != null) feedbackText.text = "";
+        if (submitButton != null) submitButton.gameObject.SetActive(true);
     }
 
-    /// <summary>Update teks jumlah apel di meja secara real-time.</summary>
-    public void UpdateAppleCount(int count)
+    /// <summary>Tampilkan pesan transisi antar bagian — tetap di canvas soal.</summary>
+    public void ShowTransition(string message)
     {
-        if (appleCountText != null)
-            appleCountText.text = $"Jumlah: {count}";
+        if (questionText != null) questionText.gameObject.SetActive(false);
+        if (roundText != null)    roundText.gameObject.SetActive(false);
+        if (feedbackText != null) feedbackText.text = message;
+        if (submitButton != null) submitButton.gameObject.SetActive(false);
     }
 
     /// <summary>Tampilkan feedback benar/salah per jawaban — tetap di canvas soal.</summary>
-    public void ShowFeedback(bool isCorrect, int playerAnswer, int correctAnswer)
+    public void ShowFeedback(bool isCorrect, string correctAnswerDisplay)
     {
-        // Tetap di canvas soal — hanya update teks feedback
+        if (questionText != null) questionText.gameObject.SetActive(false);
         if (feedbackText != null)
         {
             feedbackText.text = isCorrect
-                ? $"Benar! Jawaban: {correctAnswer}"
-                : $"Salah. Jawabannya {correctAnswer}, kamu menyusun {playerAnswer} apel.";
+                ? "Benar!"
+                : $"Salah. Jawaban: {correctAnswerDisplay}";
         }
         if (submitButton != null) submitButton.gameObject.SetActive(false);
     }
@@ -136,34 +136,34 @@ public class ML2UIManager : MonoBehaviour
     /// <summary>Tampilkan layar recap akhir game (canvas coin/hasil).</summary>
     public void ShowFinalResult(int correctAnswers, int totalRounds)
     {
-        Debug.Log($"[ML2UIManager] ShowFinalResult dipanggil: {correctAnswers}/{totalRounds}");
-        Debug.Log($"[ML2UIManager] canvasRecap null? {canvasRecap == null}");
-        Debug.Log($"[ML2UIManager] resultPanel null? {resultPanel == null}");
-        Debug.Log($"[ML2UIManager] resultSprites null? {resultSprites == null} | length: {resultSprites?.Length}");
+        Debug.Log($"[LL1UIManager] ShowFinalResult dipanggil: {correctAnswers}/{totalRounds}");
+        Debug.Log($"[LL1UIManager] canvasRecap null? {canvasRecap == null}");
+        Debug.Log($"[LL1UIManager] resultPanel null? {resultPanel == null}");
+        Debug.Log($"[LL1UIManager] resultSprites null? {resultSprites == null} | length: {resultSprites?.Length}");
 
         // State 3: hanya recap
         ShowRecapCanvas();
 
         if (resultPanel == null)
         {
-            Debug.LogError("[ML2UIManager] resultPanel BELUM DI-ASSIGN di Inspector!");
+            Debug.LogError("[LL1UIManager] resultPanel BELUM DI-ASSIGN di Inspector!");
             return;
         }
 
         if (resultSprites == null || resultSprites.Length == 0)
         {
-            Debug.LogError("[ML2UIManager] resultSprites KOSONG! Assign 6 sprite di Inspector.");
+            Debug.LogError("[LL1UIManager] resultSprites KOSONG! Assign sprite di Inspector.");
             return;
         }
 
         if (correctAnswers >= resultSprites.Length)
         {
-            Debug.LogError($"[ML2UIManager] Index {correctAnswers} melebihi panjang resultSprites ({resultSprites.Length})!");
+            Debug.LogError($"[LL1UIManager] Index {correctAnswers} melebihi panjang resultSprites ({resultSprites.Length})!");
             return;
         }
 
         resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers]);
-        Debug.Log("[ML2UIManager] resultPanel.Show() berhasil dipanggil.");
+        Debug.Log("[LL1UIManager] resultPanel.Show() berhasil dipanggil.");
     }
 
     /// <summary>Reset UI ke state awal (sebelum meja di-place) — dipakai saat retry.</summary>
@@ -172,10 +172,9 @@ public class ML2UIManager : MonoBehaviour
         // Kembali ke State 1: hanya header
         ShowHeaderOnly();
 
-        if (questionText != null)   questionText.text = "";
-        if (roundText != null)      roundText.text = "";
-        if (feedbackText != null)   feedbackText.text = "";
-        if (appleCountText != null) appleCountText.text = "";
-        if (submitButton != null)   submitButton.gameObject.SetActive(false);
+        if (questionText != null)  { questionText.gameObject.SetActive(true); questionText.text = ""; }
+        if (roundText != null)     { roundText.gameObject.SetActive(true);    roundText.text = ""; }
+        if (feedbackText != null)  feedbackText.text = "";
+        if (submitButton != null)  submitButton.gameObject.SetActive(false);
     }
 }

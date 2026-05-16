@@ -2,59 +2,97 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+/// <summary>
+/// Mengelola semua tampilan UI untuk Math Level 1.
+/// Pasang ke GameObject UI Manager di scene MathLevel1.
+/// </summary>
 public class ML1UIManager : MonoBehaviour
 {
+    [Header("Teks UI")]
     public TextMeshProUGUI questionText;
     public TextMeshProUGUI countApples;
     public TMP_Text roundText;
-    public Button retryButton;
     public Sprite[] resultSprites; // Masukkan 6 gambar (0-5 benar)
     public ResultPanel resultPanel;
-    
+
+    [Header("Canvas")]
+    [Tooltip("Canvas header — selalu tampil sebelum dan selama gameplay")]
+    public GameObject canvasHeader;
+    [Tooltip("Canvas soal (main) — hanya tampil setelah meja di-place")]
+    public GameObject canvasSoal;
+    [Tooltip("Canvas recap akhir game — hanya tampil saat game selesai")]
+    public GameObject canvasRecap;
+
     private ML1GameManager gameManager;
 
     void Start()
     {
         gameManager = FindFirstObjectByType<ML1GameManager>();
-        
+
         if (resultPanel != null) resultPanel.Hide();
-        
-        UpdateUI();
-        
-        // Setup retry button
-        if (retryButton != null)
+
+        // Setup retry button di ResultPanel
+        if (resultPanel != null && resultPanel.retryButton != null)
         {
-            retryButton.gameObject.SetActive(false);
-            retryButton.onClick.AddListener(() => 
+            resultPanel.retryButton.onClick.AddListener(() =>
             {
-                retryButton.gameObject.SetActive(false);
-                UpdateUI();
-                gameManager.RestartGame();
+                if (gameManager != null) gameManager.RestartGame();
             });
         }
+
+        // State awal: hanya header yang muncul
+        ShowHeaderOnly();
     }
 
-    void UpdateUI()
+    // ─── Helper Toggle Canvas ──────────────────────────────────
+
+    /// <summary>
+    /// STATE 1 — Sebelum meja di-place:
+    /// Header ON | Soal OFF | Recap OFF
+    /// </summary>
+    private void ShowHeaderOnly()
     {
-        if (questionText != null)
-        {
-            questionText.text = "Pilih sisi yang lebih banyak!";
-        }
-
-        // Sembunyikan teks jumlah buah saat belum menjawab
-        if (countApples != null) countApples.gameObject.SetActive(false);
-        if (resultPanel != null) resultPanel.Hide();
+        if (canvasHeader != null) canvasHeader.SetActive(true);
+        if (canvasSoal != null)   canvasSoal.SetActive(false);
+        if (canvasRecap != null)  canvasRecap.SetActive(false);
+        if (resultPanel != null)  resultPanel.Hide();
     }
+
+    /// <summary>
+    /// STATE 2 — Saat gameplay berlangsung:
+    /// Header ON | Soal ON | Recap OFF
+    /// </summary>
+    private void ShowGameplayCanvas()
+    {
+        if (canvasHeader != null) canvasHeader.SetActive(true);
+        if (canvasSoal != null)   canvasSoal.SetActive(true);
+        if (canvasRecap != null)  canvasRecap.SetActive(false);
+    }
+
+    /// <summary>
+    /// STATE 3 — Saat game selesai:
+    /// Header OFF | Soal OFF | Recap ON
+    /// </summary>
+    private void ShowRecapCanvas()
+    {
+        if (canvasHeader != null) canvasHeader.SetActive(false);
+        if (canvasSoal != null)   canvasSoal.SetActive(false);
+        if (canvasRecap != null)  canvasRecap.SetActive(true);
+    }
+
+    // ─── Dipanggil oleh ML1GameManager ───────────────────────
 
     public void UpdateRoundInfo(int currentRound, int maxRounds)
     {
         if (roundText != null)
-        {
             roundText.text = $"Soal {currentRound} dari 5";
-        }
-        
-        // Reset UI tiap kali soal baru dimulai
-        UpdateUI();
+
+        // Pastikan canvas soal aktif dan reset elemen
+        ShowGameplayCanvas();
+
+        if (questionText != null) questionText.text = "Pilih sisi yang lebih banyak!";
+        if (countApples != null)  countApples.gameObject.SetActive(false);
+        if (resultPanel != null)  resultPanel.Hide();
     }
 
     void ShowCounts(string answer)
@@ -63,38 +101,56 @@ public class ML1UIManager : MonoBehaviour
         {
             countApples.text = answer;
             countApples.gameObject.SetActive(true);
-            if (gameManager.applesOnLeft > gameManager.applesOnRight) {
+            if (gameManager.applesOnLeft > gameManager.applesOnRight)
                 countApples.text += $" Kiri ({gameManager.applesOnLeft}) lebih dari Kanan ({gameManager.applesOnRight})";
-            } else {
+            else
                 countApples.text += $" Kanan ({gameManager.applesOnRight}) lebih dari Kiri ({gameManager.applesOnLeft})";
-            }
         }
     }
 
     public void OnAnswerCorrect()
-    {   
+    {
+        // Tetap di canvas soal — tampilkan hasil per jawaban
         ShowCounts("Benar!");
-        questionText.text = "";
+        if (questionText != null) questionText.text = "";
     }
 
     public void OnAnswerWrong()
     {
-            
+        // Tetap di canvas soal — tampilkan hasil per jawaban
         ShowCounts("Salah!");
-        questionText.text = "";
+        if (questionText != null) questionText.text = "";
     }
 
     public void ShowFinalResult(int correctAnswers, int totalRounds)
     {
-        Debug.Log($"ShowFinalResult dipanggil: {correctAnswers}/{totalRounds}");
-        Debug.Log($"resultPanel null? {resultPanel == null}");
-        Debug.Log($"resultSprites null? {resultSprites == null}, length: {resultSprites?.Length}");
+        Debug.Log($"[ML1UIManager] ShowFinalResult dipanggil: {correctAnswers}/{totalRounds}");
+        Debug.Log($"[ML1UIManager] canvasRecap null? {canvasRecap == null}");
+        Debug.Log($"[ML1UIManager] resultPanel null? {resultPanel == null}");
+        Debug.Log($"[ML1UIManager] resultSprites null? {resultSprites == null} | length: {resultSprites?.Length}");
 
-        if (resultPanel != null && resultSprites != null)
+        // State 3: hanya recap
+        ShowRecapCanvas();
+
+        if (resultPanel == null)
         {
-            Debug.Log($"Sprite index {correctAnswers}: {resultSprites[correctAnswers]?.name}");
-            resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers]);
+            Debug.LogError("[ML1UIManager] resultPanel BELUM DI-ASSIGN di Inspector!");
+            return;
         }
-    }
 
+        if (resultSprites == null || resultSprites.Length == 0)
+        {
+            Debug.LogError("[ML1UIManager] resultSprites KOSONG! Assign sprite di Inspector.");
+            return;
+        }
+
+        if (correctAnswers >= resultSprites.Length)
+        {
+            Debug.LogError($"[ML1UIManager] Index {correctAnswers} melebihi panjang resultSprites ({resultSprites.Length})!");
+            return;
+        }
+
+        resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers]);
+        Debug.Log("[ML1UIManager] resultPanel.Show() berhasil dipanggil.");
+    }
 }
