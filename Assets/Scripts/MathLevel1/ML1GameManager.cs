@@ -19,6 +19,11 @@ public class ML1GameManager : MonoBehaviour
     private const int MAX_ROUNDS = 5;
     private int correctAnswers = 0;
 
+    [Header("Progress")]
+    public string progressSubject = "Math";
+    public int progressLevelNumber = 1;
+    public int minimumCorrectToPass = 4;
+
     void Awake()
     {
         uiManager = FindFirstObjectByType<ML1UIManager>();
@@ -214,6 +219,8 @@ public class ML1GameManager : MonoBehaviour
     {
         Debug.Log($"=== GAME OVER ===");
         Debug.Log($"Benar: {correctAnswers} dari {MAX_ROUNDS}");
+
+        LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctAnswers, minimumCorrectToPass);
         
         if (uiManager != null)
             uiManager.ShowFinalResult(correctAnswers, MAX_ROUNDS);

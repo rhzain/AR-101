@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Mengelola semua tampilan UI untuk Literacy Level 1.
@@ -44,15 +45,6 @@ public class LL1UIManager : MonoBehaviour
                 if (gameManager != null) gameManager.SubmitAnswer();
             });
             submitButton.gameObject.SetActive(false);
-        }
-
-        // Setup retry button di ResultPanel
-        if (resultPanel != null && resultPanel.retryButton != null)
-        {
-            resultPanel.retryButton.onClick.AddListener(() =>
-            {
-                if (gameManager != null) gameManager.RestartGame();
-            });
         }
 
         // State awal: hanya header yang muncul
@@ -156,14 +148,36 @@ public class LL1UIManager : MonoBehaviour
             return;
         }
 
-        if (correctAnswers >= resultSprites.Length)
+        int resultSpriteIndex = GetResultSpriteIndex(correctAnswers, totalRounds);
+
+        if (resultSpriteIndex >= resultSprites.Length)
         {
-            Debug.LogError($"[LL1UIManager] Index {correctAnswers} melebihi panjang resultSprites ({resultSprites.Length})!");
+            Debug.LogError($"[LL1UIManager] Index {resultSpriteIndex} melebihi panjang resultSprites ({resultSprites.Length})!");
             return;
         }
 
-        resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers]);
+        bool isPassed = gameManager != null && correctAnswers >= gameManager.minimumCorrectToPass;
+        string buttonText = isPassed ? "Level Berikutnya" : "Coba Lagi";
+
+        resultPanel.Show(correctAnswers, totalRounds, resultSprites[resultSpriteIndex], isPassed, buttonText, () =>
+        {
+            if (isPassed)
+                SceneManager.LoadScene("LiteracyLevel");
+            else if (gameManager != null)
+                gameManager.RestartGame();
+        });
+
         Debug.Log("[LL1UIManager] resultPanel.Show() berhasil dipanggil.");
+    }
+
+    private int GetResultSpriteIndex(int correctAnswers, int totalRounds)
+    {
+        if (resultSprites.Length > totalRounds)
+            return Mathf.Clamp(correctAnswers, 0, resultSprites.Length - 1);
+
+        int maxSpriteIndex = resultSprites.Length - 1;
+        float normalizedScore = totalRounds <= 0 ? 0f : (float)correctAnswers / totalRounds;
+        return Mathf.Clamp(Mathf.RoundToInt(normalizedScore * maxSpriteIndex), 0, maxSpriteIndex);
     }
 
     /// <summary>Reset UI ke state awal (sebelum meja di-place) — dipakai saat retry.</summary>

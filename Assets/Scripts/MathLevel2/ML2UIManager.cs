@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Mengelola semua tampilan UI untuk Math Level 2.
@@ -45,15 +46,6 @@ public class ML2UIManager : MonoBehaviour
                 if (gameManager != null) gameManager.SubmitAnswer();
             });
             submitButton.gameObject.SetActive(false);
-        }
-
-        // Setup retry button di ResultPanel
-        if (resultPanel != null && resultPanel.retryButton != null)
-        {
-            resultPanel.retryButton.onClick.AddListener(() =>
-            {
-                if (gameManager != null) gameManager.RestartGame();
-            });
         }
 
         // State awal: hanya header yang muncul
@@ -162,7 +154,17 @@ public class ML2UIManager : MonoBehaviour
             return;
         }
 
-        resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers]);
+        bool isPassed = gameManager != null && correctAnswers >= gameManager.minimumCorrectToPass;
+        string buttonText = isPassed ? "Level Berikutnya" : "Coba Lagi";
+
+        resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers], isPassed, buttonText, () =>
+        {
+            if (isPassed)
+                SceneManager.LoadScene("MathLevel");
+            else if (gameManager != null)
+                gameManager.RestartGame();
+        });
+
         Debug.Log("[ML2UIManager] resultPanel.Show() berhasil dipanggil.");
     }
 

@@ -45,6 +45,11 @@ public class ML2GameManager : MonoBehaviour
     private int correctAnswers = 0;
     private bool questionActive = false;
 
+    [Header("Progress")]
+    public string progressSubject = "Math";
+    public int progressLevelNumber = 2;
+    public int minimumCorrectToPass = 4;
+
     private ML2UIManager uiManager;
 
     // ─── Lifecycle ────────────────────────────────────────────
@@ -130,6 +135,8 @@ public class ML2GameManager : MonoBehaviour
     void ShowFinalResult()
     {
         ClearAllApples();
+
+        LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctAnswers, minimumCorrectToPass);
 
         if (uiManager != null)
             uiManager.ShowFinalResult(correctAnswers, MAX_ROUNDS);

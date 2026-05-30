@@ -69,6 +69,12 @@ public class LL1GameManager : MonoBehaviour
     private int correctAnswers = 0;
     private bool questionActive = false;
 
+    [Header("Progress")]
+    public string progressSubject = "Literacy";
+    public int progressLevelNumber = 1;
+    [Tooltip("Level ini totalnya 10 soal, jadi 8 berarti setara 4 dari 5.")]
+    public int minimumCorrectToPass = 8;
+
     private Question[] CurrentQuestions =>
         currentPhase == GamePhase.Spell ? spellQuestions : sentenceQuestions;
 
@@ -184,6 +190,9 @@ public class LL1GameManager : MonoBehaviour
     {
         ClearSpawnedObjects();
         int total = ROUNDS_PER_PHASE * 2;
+
+        LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctAnswers, minimumCorrectToPass);
+
         if (uiManager != null)
             uiManager.ShowFinalResult(correctAnswers, total);
         Debug.Log($"[LL1GameManager] GAME OVER - Benar: {correctAnswers}/{total}");

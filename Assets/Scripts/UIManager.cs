@@ -20,7 +20,9 @@ public class UIManager : MonoBehaviour
 
     public void Logout()
     {
-        PlayerPrefs.DeleteAll();
+        PlayerPrefs.DeleteKey("Nama");
+        PlayerPrefs.DeleteKey("Kelas");
+        PlayerPrefs.Save();
         SceneManager.LoadScene("LoginScene");
     }
 
@@ -32,8 +34,10 @@ public class UIManager : MonoBehaviour
 
     public void ToggleSound()
     {
-        isSoundOn = !isSoundOn;
-        Debug.Log("Sound: " + (isSoundOn ? "ON" : "OFF"));
+        if (ButtonSfxManager.Instance == null) return;
+
+        ButtonSfxManager.Instance.PlayButtonClick();
+        ButtonSfxManager.Instance.ToggleSound();
     }
 
     public void GoToLearning()

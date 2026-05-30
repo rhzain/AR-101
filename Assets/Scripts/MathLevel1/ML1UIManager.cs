@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Mengelola semua tampilan UI untuk Math Level 1.
@@ -30,15 +31,6 @@ public class ML1UIManager : MonoBehaviour
         gameManager = FindFirstObjectByType<ML1GameManager>();
 
         if (resultPanel != null) resultPanel.Hide();
-
-        // Setup retry button di ResultPanel
-        if (resultPanel != null && resultPanel.retryButton != null)
-        {
-            resultPanel.retryButton.onClick.AddListener(() =>
-            {
-                if (gameManager != null) gameManager.RestartGame();
-            });
-        }
 
         // State awal: hanya header yang muncul
         ShowHeaderOnly();
@@ -150,7 +142,17 @@ public class ML1UIManager : MonoBehaviour
             return;
         }
 
-        resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers]);
+        bool isPassed = gameManager != null && correctAnswers >= gameManager.minimumCorrectToPass;
+        string buttonText = isPassed ? "Level Berikutnya" : "Coba Lagi";
+
+        resultPanel.Show(correctAnswers, totalRounds, resultSprites[correctAnswers], isPassed, buttonText, () =>
+        {
+            if (isPassed)
+                SceneManager.LoadScene("MathLevel");
+            else if (gameManager != null)
+                gameManager.RestartGame();
+        });
+
         Debug.Log("[ML1UIManager] resultPanel.Show() berhasil dipanggil.");
     }
 }
