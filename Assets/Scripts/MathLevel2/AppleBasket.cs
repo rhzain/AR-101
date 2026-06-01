@@ -15,6 +15,15 @@ public class AppleBasket : MonoBehaviour
     [Tooltip("Tinggi spawn apel di atas posisi keranjang")]
     public float spawnHeight = 0.1f;
 
+    [Tooltip("Radius area kecil untuk mencari posisi spawn kosong di sekitar keranjang")]
+    public float spawnSearchRadius = 0.12f;
+
+    [Tooltip("Jarak minimal dari pusat apel lain saat spawn")]
+    public float appleCollisionRadius = 0.08f;
+
+    [Tooltip("Jumlah percobaan mencari posisi kosong saat spawn")]
+    public int maxSpawnAttempts = 20;
+
     private Camera cam;
 
     void Awake()
@@ -58,8 +67,7 @@ public class AppleBasket : MonoBehaviour
         if (hit.collider.gameObject != gameObject && !hit.collider.transform.IsChildOf(transform))
             return;
 
-        // Spawn apel di posisi keranjang + offset tinggi
-        Vector3 spawnPos = transform.position + Vector3.up * spawnHeight;
+        Vector3 spawnPos = GetClearSpawnPosition();
         GameObject apple = Instantiate(applePrefab, spawnPos, Quaternion.identity);
         
         // Pastikan objeknya aktif (berguna jika master/prefab-nya dalam kondisi deactive di scene)
@@ -73,6 +81,48 @@ public class AppleBasket : MonoBehaviour
         }
 
         Debug.Log("Apel baru di-spawn dari keranjang!");
+    }
+
+    Vector3 GetClearSpawnPosition()
+    {
+        Vector3 fallbackPosition = transform.position + transform.up * spawnHeight;
+
+        for (int attempt = 0; attempt < maxSpawnAttempts; attempt++)
+        {
+            float rx = Random.Range(-spawnSearchRadius, spawnSearchRadius);
+            float rz = Random.Range(-spawnSearchRadius, spawnSearchRadius);
+
+            Vector3 candidatePosition = transform.position
+                                      + transform.right * rx
+                                      + transform.forward * rz
+                                      + transform.up * spawnHeight;
+
+            if (!IsBlockedByApple(candidatePosition))
+                return candidatePosition;
+
+            fallbackPosition = candidatePosition;
+        }
+
+        Debug.LogWarning("Tidak menemukan posisi spawn apel kosong di keranjang.");
+        return fallbackPosition;
+    }
+
+    bool IsBlockedByApple(Vector3 position)
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            position,
+            appleCollisionRadius,
+            Physics.AllLayers,
+            QueryTriggerInteraction.Ignore
+        );
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.CompareTag("Apple"))
+                return true;
+        }
+
+        return false;
     }
 
     void OnDrawGizmos()

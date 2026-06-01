@@ -6,8 +6,6 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPopup;
     public GameObject pialaPopup;
 
-    private bool isSoundOn = true;
-
     public void OpenSettings()
     {
         settingsPopup.SetActive(true);

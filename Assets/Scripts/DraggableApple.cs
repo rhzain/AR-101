@@ -7,6 +7,7 @@ public class DraggableApple : MonoBehaviour
 {
     private Camera cam;
     private Rigidbody rb;
+    private Collider ownCollider;
 
     private bool isDragging;
     private Vector3 dragOffset;
@@ -21,10 +22,18 @@ public class DraggableApple : MonoBehaviour
     [Tooltip("Offset tinggi apel di atas permukaan meja saat di-drag")]
     public float dragHoverHeight = 0.05f;
 
+    [Header("Aturan Drop Zone")]
+    [Tooltip("Kalau aktif, apel langsung hilang saat dilepas di luar DropZone.")]
+    public bool destroyWhenDroppedOutsideDropZone = false;
+
+    [Tooltip("Toleransi area DropZone agar apel yang berada sedikit di atas/tepi DropZone tetap dihitung masuk.")]
+    public float dropZoneCheckPadding = 0.25f;
+
     void Awake()
     {
         cam = Camera.main;
         rb = GetComponent<Rigidbody>();
+        ownCollider = GetComponent<Collider>();
     }
 
     void Update()
@@ -93,8 +102,15 @@ public class DraggableApple : MonoBehaviour
     private void StopDrag()
     {
         isDragging = false;
-        rb.isKinematic = false;
         AnyAppleDragging = false;
+
+        if (destroyWhenDroppedOutsideDropZone && !IsInsideDropZone())
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        rb.isKinematic = false;
     }
 
     /// <summary>
@@ -131,6 +147,56 @@ public class DraggableApple : MonoBehaviour
 
         rb.isKinematic = true;
         isDragging = true;
+    }
+
+    private bool IsInsideDropZone()
+    {
+        if (ownCollider == null)
+            return false;
+
+        Physics.SyncTransforms();
+
+        if (IsTouchingDropZoneCollider())
+            return true;
+
+        DropZone[] dropZones = FindObjectsByType<DropZone>(FindObjectsSortMode.None);
+        foreach (DropZone dropZone in dropZones)
+        {
+            Collider dropZoneCollider = dropZone.GetComponent<Collider>();
+            if (dropZoneCollider == null || !dropZoneCollider.enabled || !dropZoneCollider.gameObject.activeInHierarchy)
+                continue;
+
+            Bounds dropZoneBounds = dropZoneCollider.bounds;
+            dropZoneBounds.Expand(dropZoneCheckPadding);
+
+            if (dropZoneBounds.Contains(ownCollider.bounds.center))
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool IsTouchingDropZoneCollider()
+    {
+        Bounds bounds = ownCollider.bounds;
+        Collider[] hits = Physics.OverlapBox(
+            bounds.center,
+            bounds.extents,
+            Quaternion.identity,
+            Physics.AllLayers,
+            QueryTriggerInteraction.Collide
+        );
+
+        foreach (Collider hit in hits)
+        {
+            if (hit == ownCollider || hit.transform.IsChildOf(transform))
+                continue;
+
+            if (hit.GetComponentInParent<DropZone>() != null)
+                return true;
+        }
+
+        return false;
     }
 
     private bool TryGetPointerPosition(out Vector2 pos)

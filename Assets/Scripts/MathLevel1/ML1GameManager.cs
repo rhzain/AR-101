@@ -8,6 +8,10 @@ public class ML1GameManager : MonoBehaviour
     public float spawnRadius = 0.25f;
     [Tooltip("Offset tinggi apel di atas permukaan meja saat spawn (meter)")]
     public float spawnHeightOffset = 0.05f;
+    [Tooltip("Jarak minimal dari pusat apel lain saat spawn")]
+    public float appleCollisionRadius = 0.08f;
+    [Tooltip("Jumlah percobaan mencari posisi kosong untuk setiap apel")]
+    public int maxSpawnAttempts = 30;
 
     private GameObject currentMeja;
     public int applesOnLeft;
@@ -110,18 +114,54 @@ public class ML1GameManager : MonoBehaviour
     {
         for (int i = 0; i < count; i++)
         {
-            // Offset menggunakan local axis spawnArea agar sejajar rotasi meja
-            float rx = Random.Range(-spawnRadius, spawnRadius);
-            float rz = Random.Range(-spawnRadius, spawnRadius);
-
-            Vector3 spawnPos = spawnArea.position
-                             + spawnArea.right   * rx
-                             + spawnArea.forward * rz
-                             + spawnArea.up      * spawnHeightOffset;
+            Vector3 spawnPos = GetClearSpawnPosition(spawnArea);
 
             // Rotasi ikut meja agar tidak miring di AR
             Instantiate(applePrefab, spawnPos, spawnArea.rotation, spawnArea);
         }
+    }
+
+    Vector3 GetClearSpawnPosition(Transform spawnArea)
+    {
+        Vector3 fallbackPosition = spawnArea.position + spawnArea.up * spawnHeightOffset;
+
+        for (int attempt = 0; attempt < maxSpawnAttempts; attempt++)
+        {
+            // Offset menggunakan local axis spawnArea agar sejajar rotasi meja
+            float rx = Random.Range(-spawnRadius, spawnRadius);
+            float rz = Random.Range(-spawnRadius, spawnRadius);
+
+            Vector3 candidatePosition = spawnArea.position
+                                      + spawnArea.right * rx
+                                      + spawnArea.forward * rz
+                                      + spawnArea.up * spawnHeightOffset;
+
+            if (!IsBlockedByApple(candidatePosition))
+                return candidatePosition;
+
+            fallbackPosition = candidatePosition;
+        }
+
+        Debug.LogWarning("Tidak menemukan posisi spawn apel yang kosong. Perbesar spawnRadius atau kecilkan appleCollisionRadius.");
+        return fallbackPosition;
+    }
+
+    bool IsBlockedByApple(Vector3 position)
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            position,
+            appleCollisionRadius,
+            Physics.AllLayers,
+            QueryTriggerInteraction.Ignore
+        );
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.CompareTag("Apple"))
+                return true;
+        }
+
+        return false;
     }
 
     // Visualisasi area scatter di Scene view
