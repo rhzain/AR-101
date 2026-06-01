@@ -14,6 +14,9 @@ public class PlacementManager : MonoBehaviour
     // MathL2 - sambungkan ML2GameManager di Inspector (biarkan kosong jika MathL1)
     public ML2GameManager ml2GameManager;
 
+    // MathL3 - sambungkan ML3GameManager di Inspector (biarkan kosong jika bukan MathL3)
+    public MathLevel3.ML3GameManager ml3GameManager;
+
     // Literacy - sambungkan LiteracyGameManager di Inspector (biarkan kosong jika bukan literacy)
     public LL1GameManager ll1GameManager;
 
@@ -79,6 +82,26 @@ public class PlacementManager : MonoBehaviour
                     Debug.LogWarning("PlacementManager: AppleBasket tidak ditemukan di dalam meja yang di-spawn!");
 
                 ml2GameManager.StartGame();
+            }
+            // MathL3: pakai ML3GameManager dan layout tiga slot
+            else if (ml3GameManager != null)
+            {
+                MathLevel3.ML3TableLayout spawnedLayout = meja.GetComponent<MathLevel3.ML3TableLayout>();
+                if (spawnedLayout == null)
+                    spawnedLayout = meja.GetComponentInChildren<MathLevel3.ML3TableLayout>(true);
+
+                if (spawnedLayout != null)
+                {
+                    ml3GameManager.tableLayout = spawnedLayout;
+                    spawnedLayout.ApplyTableSurface();
+                    Debug.Log("[PlacementManager] ML3TableLayout berhasil disambungkan ke ML3GameManager.");
+                }
+                else
+                {
+                    Debug.LogWarning("PlacementManager: ML3TableLayout tidak ditemukan di prefab layout yang di-spawn!");
+                }
+
+                ml3GameManager.StartGame();
             }
             // Literacy: pakai LiteracyGameManager
             else if (ll1GameManager != null)
@@ -154,4 +177,4 @@ public class PlacementManager : MonoBehaviour
         return true;
 #endif
     }
-}
+}

@@ -1,24 +1,9 @@
 fileFormatVersion: 2
-guid: a4ee085c638cef2459538eaffc955044
+guid: 9f03f282a21aa7b4eb70b0b7ef2f4495
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: KulitApel
-    second: {fileID: 5940753630352405063, guid: d9c2b6ba9b6b6a34c8bd4b03fe26be67, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: daun
-    second: {fileID: -7614357322626649185, guid: d9c2b6ba9b6b6a34c8bd4b03fe26be67, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: tangkai
-    second: {fileID: -5083714708427353034, guid: d9c2b6ba9b6b6a34c8bd4b03fe26be67, type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0

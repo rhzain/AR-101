@@ -188,6 +188,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableApple
   dragHoverHeight: 0.05
+  destroyWhenDroppedOutsideDropZone: 0
+  dropZoneCheckPadding: 0.25
 --- !u!114 &6731135098215443565
 MonoBehaviour:
   m_ObjectHideFlags: 0
