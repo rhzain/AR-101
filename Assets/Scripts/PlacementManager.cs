@@ -20,6 +20,9 @@ public class PlacementManager : MonoBehaviour
     // Literacy - sambungkan LiteracyGameManager di Inspector (biarkan kosong jika bukan literacy)
     public LL1GameManager ll1GameManager;
 
+    // Literacy L2 - sambungkan LL2GameManager di Inspector (biarkan kosong jika bukan LiteracyL2)
+    public LiteracyLevel2.LL2GameManager ll2GameManager;
+
     private ARRaycastManager raycastManager;
     private ARPlaneManager planeManager;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -125,7 +128,47 @@ public class PlacementManager : MonoBehaviour
 
                 ll1GameManager.StartGame();
             }
+            // Literacy Level 2: ARQuestionLayout + AnswerSlots mengikuti titik tap plane
+            else if (ll2GameManager != null)
+            {
+                Debug.Log("[PlacementManager] Masuk cabang Literacy Level 2. Menyambungkan ARQuestionLayout ke LL2GameManager.");
+
+                LiteracyLevel2.LL2AnswerLayout answerLayout = meja.GetComponent<LiteracyLevel2.LL2AnswerLayout>();
+                if (answerLayout == null)
+                    answerLayout = meja.GetComponentInChildren<LiteracyLevel2.LL2AnswerLayout>(true);
+
+                if (answerLayout == null)
+                {
+                    answerLayout = meja.AddComponent<LiteracyLevel2.LL2AnswerLayout>();
+                    Debug.LogWarning("[PlacementManager] LL2AnswerLayout tidak ditemukan di ARQuestionLayout, komponen fallback ditambahkan.");
+                }
+
+                answerLayout.AutoAssignChildren();
+                ll2GameManager.answerLayout = answerLayout;
+                ll2GameManager.choiceAreaCenter = FindOrCreateChild(meja.transform, "ChoiceAreaCenter", new Vector3(0f, 0.06f, -0.08f));
+
+                Debug.Log($"[PlacementManager] LL2 slots: Small={answerLayout.smallSlots?.Length ?? 0}, Medium={answerLayout.mediumSlots?.Length ?? 0}, Large={answerLayout.largeSlots?.Length ?? 0}");
+
+                if (ll2GameManager.runtimeParent == null)
+                    ll2GameManager.runtimeParent = meja.transform;
+
+                ll2GameManager.StartGame();
+            }
         }
+    }
+
+    private Transform FindOrCreateChild(Transform parent, string childName, Vector3 localPosition)
+    {
+        Transform child = parent.Find(childName);
+        if (child != null)
+            return child;
+
+        GameObject childObject = new GameObject(childName);
+        childObject.transform.SetParent(parent, false);
+        childObject.transform.localPosition = localPosition;
+        childObject.transform.localRotation = Quaternion.identity;
+        childObject.transform.localScale = Vector3.one;
+        return childObject.transform;
     }
 
     /// <summary>
