@@ -135,7 +135,7 @@ public class ButtonSfxManager : MonoBehaviour
 }
 
 [RequireComponent(typeof(Button))]
-public class ButtonClickSfx : MonoBehaviour, IPointerClickHandler, ISubmitHandler
+public class ButtonClickSfx : MonoBehaviour, IPointerDownHandler, ISubmitHandler
 {
     private Button button;
 
@@ -144,7 +144,7 @@ public class ButtonClickSfx : MonoBehaviour, IPointerClickHandler, ISubmitHandle
         button = GetComponent<Button>();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerDown(PointerEventData eventData)
     {
         if (eventData != null && eventData.button != PointerEventData.InputButton.Left)
             return;
