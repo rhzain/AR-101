@@ -13,8 +13,11 @@ namespace LiteracyLevel3
         MultipleAnswer
     }
 
+    [RequireComponent(typeof(AudioSource))]
     public class LL3GameManager : MonoBehaviour
     {
+        private const int TasksPerFinalScorePoint = 2;
+
         [Serializable]
         public class LiteralStep
         {
@@ -100,9 +103,19 @@ namespace LiteracyLevel3
         public Material selectedMaterial;
         public Color selectedColor = new Color(1f, 0.92f, 0.25f, 1f);
         public float selectedScaleMultiplier = 1.05f;
+        [Tooltip("Nonaktifkan untuk menjaga material asli object. Selected hanya memakai scale.")]
+        public bool useMaterialSelectionEffect = false;
 
         [Header("Audio")]
         public AudioSource audioSource;
+        [Tooltip("Audio yang diputar saat susun cerita atau jawaban pertanyaan benar.")]
+        public AudioClip jawabanBenarClip;
+        [Tooltip("Audio yang diputar saat susun cerita atau jawaban pertanyaan salah.")]
+        public AudioClip jawabanSalahClip;
+        [Tooltip("Audio yang diputar saat level selesai dan pemain lulus.")]
+        public AudioClip levelCompleteClip;
+        [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
+        public AudioClip levelIncompleteClip;
 
         [Header("Data Cerita")]
         public bool buildStoriesFromCode = true;
@@ -134,7 +147,6 @@ namespace LiteracyLevel3
         private bool storyOrderActive;
         private bool objectStepActive;
         private bool lastStorySlotsFilled;
-        private bool storyOrderRetryMode;
         private Coroutine flowCoroutine;
 
         private int MaxStories => stories == null ? 0 : stories.Length;
@@ -159,6 +171,12 @@ namespace LiteracyLevel3
 
             if (audioSource == null)
                 audioSource = GetComponent<AudioSource>();
+
+            if (audioSource == null)
+                audioSource = gameObject.AddComponent<AudioSource>();
+
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 0f;
         }
 
         private void Update()
@@ -369,7 +387,6 @@ namespace LiteracyLevel3
             storyOrderActive = false;
             objectStepActive = false;
             lastStorySlotsFilled = false;
-            storyOrderRetryMode = false;
 
             if (uiManager != null)
                 uiManager.ResetUI();
@@ -397,12 +414,6 @@ namespace LiteracyLevel3
         {
             if (storyOrderActive)
             {
-                if (storyOrderRetryMode)
-                {
-                    BeginStoryOrderRetry();
-                    return;
-                }
-
                 SubmitStoryOrder();
                 return;
             }
@@ -453,7 +464,6 @@ namespace LiteracyLevel3
             SpawnStoryOrder(story);
             storyOrderActive = true;
             lastStorySlotsFilled = false;
-            storyOrderRetryMode = false;
 
             if (uiManager != null)
             {
@@ -469,6 +479,8 @@ namespace LiteracyLevel3
 
             if (!AreAllStorySlotsFilled())
             {
+                PlayAudio(jawabanSalahClip);
+
                 if (uiManager != null)
                     uiManager.ShowFeedback(false, "Susun semua kalimat dulu.");
                 return;
@@ -477,22 +489,23 @@ namespace LiteracyLevel3
             bool isCorrect = IsStoryOrderCorrect();
             if (!isCorrect)
             {
-                storyOrderRetryMode = true;
+                lastStorySlotsFilled = AreAllStorySlotsFilled();
+                PlayAudio(jawabanSalahClip);
 
                 if (uiManager != null)
                 {
                     uiManager.ShowFeedback(false, "Salah");
-                    uiManager.SetSubmitButtonText("Coba Lagi");
-                    uiManager.SetCheckButtonInteractable(true);
+                    uiManager.SetSubmitButtonText("Cek Jawaban");
+                    uiManager.SetCheckButtonInteractable(lastStorySlotsFilled);
                 }
 
                 return;
             }
 
             correctTaskAnswers++;
+            PlayAudio(jawabanBenarClip);
 
             storyOrderActive = false;
-            storyOrderRetryMode = false;
             SetStoryCardsInteractable(false);
 
             if (uiManager != null)
@@ -505,24 +518,8 @@ namespace LiteracyLevel3
             StartCoroutine(AdvanceToObjectQuestionsAfterDelay());
         }
 
-        private void BeginStoryOrderRetry()
-        {
-            storyOrderRetryMode = false;
-            lastStorySlotsFilled = AreAllStorySlotsFilled();
-
-            if (uiManager != null)
-            {
-                uiManager.ClearFeedback();
-                uiManager.SetSubmitButtonText("Cek Jawaban");
-                uiManager.SetCheckButtonInteractable(lastStorySlotsFilled);
-            }
-        }
-
         private void UpdateStoryOrderSubmitState()
         {
-            if (storyOrderRetryMode)
-                return;
-
             bool allSlotsFilled = AreAllStorySlotsFilled();
             if (allSlotsFilled == lastStorySlotsFilled)
                 return;
@@ -579,6 +576,8 @@ namespace LiteracyLevel3
 
             if (selectedAnswers.Count == 0)
             {
+                PlayAudio(jawabanSalahClip);
+
                 if (uiManager != null)
                     uiManager.ShowFeedback(false, "Pilih jawaban dulu.");
                 return;
@@ -596,6 +595,8 @@ namespace LiteracyLevel3
             bool isCorrect = correctIds.SetEquals(selectedIds);
             if (isCorrect)
                 correctTaskAnswers++;
+
+            PlayAudio(isCorrect ? jawabanBenarClip : jawabanSalahClip);
 
             objectStepActive = false;
 
@@ -887,7 +888,8 @@ namespace LiteracyLevel3
                     GetLabelForId(objectId),
                     selectedMaterial,
                     selectedColor,
-                    selectedScaleMultiplier
+                    selectedScaleMultiplier,
+                    useMaterialSelectionEffect
                 );
 
                 runtimeStepObjects.Add(instance);
@@ -1159,10 +1161,12 @@ namespace LiteracyLevel3
             SetLayoutMode(false, false);
 
             int totalTasks = CountTotalTasks();
-            int maxScore = Mathf.Max(1, totalTasks / 2);
-            int finalScore = Mathf.Clamp(correctTaskAnswers / 2, 0, maxScore);
+            int maxScore = Mathf.Max(1, totalTasks / TasksPerFinalScorePoint);
+            int finalScore = Mathf.Clamp(correctTaskAnswers / TasksPerFinalScorePoint, 0, maxScore);
+            bool isComplete = finalScore >= minimumCorrectToPass;
 
             LevelProgress.SaveResult(progressSubject, progressLevelNumber, finalScore, minimumCorrectToPass);
+            PlayAudio(isComplete ? levelCompleteClip : levelIncompleteClip);
 
             if (uiManager != null)
                 uiManager.ShowFinalResult(finalScore, maxScore, minimumCorrectToPass);
@@ -1219,7 +1223,6 @@ namespace LiteracyLevel3
             spawnedStoryCards.Clear();
             spawnedStorySlots.Clear();
             storyOrderActive = false;
-            storyOrderRetryMode = false;
         }
 
         private void SetStoryCardsInteractable(bool isInteractable)

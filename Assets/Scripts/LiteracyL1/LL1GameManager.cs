@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using System.Collections;
 
+[RequireComponent(typeof(AudioSource))]
 public class LL1GameManager : MonoBehaviour
 {
     // ─── Referensi Scene ──────────────────────────────────────
@@ -32,6 +33,21 @@ public class LL1GameManager : MonoBehaviour
     // (kosongkan field ini, referensi diambil otomatis)
 
     private LL1UIManager uiManager;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    [Tooltip("Audio instruksi untuk bagian susun huruf menjadi kata.")]
+    public AudioClip instruksiSusunHurufClip;
+    [Tooltip("Audio instruksi untuk bagian susun kata menjadi kalimat.")]
+    public AudioClip instruksiSusunKalimatClip;
+    [Tooltip("Audio yang diputar saat jawaban benar.")]
+    public AudioClip jawabanBenarClip;
+    [Tooltip("Audio yang diputar saat jawaban salah.")]
+    public AudioClip jawabanSalahClip;
+    [Tooltip("Audio yang diputar saat level selesai dan pemain lulus.")]
+    public AudioClip levelCompleteClip;
+    [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
+    public AudioClip levelIncompleteClip;
 
     // ─── Data Soal ────────────────────────────────────────────
     private struct Question
@@ -86,6 +102,16 @@ public class LL1GameManager : MonoBehaviour
     void Start()
     {
         uiManager = FindFirstObjectByType<LL1UIManager>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f;
+
         if (uiManager != null) uiManager.ResetUI();
     }
 
@@ -133,6 +159,9 @@ public class LL1GameManager : MonoBehaviour
         if (uiManager != null)
             uiManager.ShowQuestion(questionStr, roundInfo);
 
+        if (currentRound == 1)
+            PlayInstructionAudio(q.isWord);
+
         SpawnCards(tokens);
         SpawnSlots(tokens.Length);
 
@@ -172,6 +201,8 @@ public class LL1GameManager : MonoBehaviour
 
         bool isCorrect = (playerAnswer == correctAnswer);
         if (isCorrect) correctAnswers++;
+        StopAudio();
+        PlayAudio(isCorrect ? jawabanBenarClip : jawabanSalahClip);
 
         string displayAnswer = q.isWord ? correctAnswer : q.answer;
         if (uiManager != null)
@@ -190,6 +221,8 @@ public class LL1GameManager : MonoBehaviour
     {
         ClearSpawnedObjects();
         int total = ROUNDS_PER_PHASE * 2;
+        StopAudio();
+        PlayAudio(correctAnswers >= minimumCorrectToPass ? levelCompleteClip : levelIncompleteClip);
 
         LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctAnswers, minimumCorrectToPass);
 
@@ -200,7 +233,33 @@ public class LL1GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        StopAudio();
         StartGame();
+    }
+
+    void PlayInstructionAudio(bool isWordQuestion)
+    {
+        PlayAudio(isWordQuestion ? instruksiSusunHurufClip : instruksiSusunKalimatClip, true);
+    }
+
+    void PlayAudio(AudioClip clip, bool stopCurrentAudio = false)
+    {
+        if (audioSource == null || clip == null)
+            return;
+
+        if (ButtonSfxManager.Instance != null && !ButtonSfxManager.Instance.IsSoundOn())
+            return;
+
+        if (stopCurrentAudio)
+            audioSource.Stop();
+
+        audioSource.PlayOneShot(clip);
+    }
+
+    void StopAudio()
+    {
+        if (audioSource != null)
+            audioSource.Stop();
     }
 
     // ─── Spawning ─────────────────────────────────────────────

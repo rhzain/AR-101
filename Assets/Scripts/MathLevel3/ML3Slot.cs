@@ -8,6 +8,7 @@ namespace MathLevel3
     {
         [Header("Object Tetap di Layout")]
         public GameObject tableModel;
+        public GameObject basketModel;
         public Transform characterAnchor;
         public TMP_Text labelText;
         public Transform spawnArea;
@@ -29,12 +30,14 @@ namespace MathLevel3
         public void AutoAssignChildren()
         {
             Transform table = transform.Find("TableModel");
+            Transform basket = FindFirstChild("BasketModel", "Keranjang", "Basket");
             Transform character = transform.Find("CharacterAnchor");
             Transform label = transform.Find("LabelAnchor");
             Transform spawn = transform.Find("SpawnArea");
             Transform zone = transform.Find("DropZone");
 
             if (tableModel == null && table != null) tableModel = table.gameObject;
+            if (basketModel == null && basket != null) basketModel = basket.gameObject;
             if (characterAnchor == null && character != null) characterAnchor = character;
             if (spawnArea == null && spawn != null) spawnArea = spawn;
 
@@ -56,16 +59,27 @@ namespace MathLevel3
             gameObject.SetActive(isActive);
         }
 
-        public void Setup(string label, GameObject characterPrefab, string acceptedItemId)
+        public void Setup(
+            string label,
+            GameObject characterPrefab,
+            string acceptedItemId,
+            ItemDropZone.ZoneMode zoneMode = ItemDropZone.ZoneMode.CountItems,
+            bool showTableModel = true)
         {
             ClearRuntimeObjects();
+
+            if (tableModel != null)
+                tableModel.SetActive(showTableModel);
+
+            if (basketModel != null)
+                basketModel.SetActive(!showTableModel);
 
             if (labelText != null)
                 labelText.text = label;
 
             if (dropZone != null)
             {
-                dropZone.mode = ItemDropZone.ZoneMode.CountItems;
+                dropZone.mode = zoneMode;
                 dropZone.acceptedItemId = acceptedItemId;
                 dropZone.ClearItems(false);
             }
@@ -101,6 +115,18 @@ namespace MathLevel3
 
             if (dropZone != null)
                 dropZone.ClearItems(false);
+        }
+
+        private Transform FindFirstChild(params string[] childNames)
+        {
+            foreach (string childName in childNames)
+            {
+                Transform child = transform.Find(childName);
+                if (child != null)
+                    return child;
+            }
+
+            return null;
         }
     }
 }

@@ -1424,7 +1424,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40.65
+  m_fontSize: 33.85
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1534,7 +1534,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Soal 1 dari 5
+  m_text: Scan Area Datar dan Tekan Areanya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
   m_sharedMaterial: {fileID: 1359437714236718880, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
@@ -1648,7 +1648,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 42}
+  m_AnchoredPosition: {x: 0, y: 70}
   m_SizeDelta: {x: 687.1892, y: 100.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1181151682
@@ -1761,6 +1761,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1231139219}
   - component: {fileID: 1231139218}
+  - component: {fileID: 1231139220}
   m_Layer: 0
   m_Name: ML1GameManager
   m_TagString: Untagged
@@ -1783,8 +1784,21 @@ MonoBehaviour:
   applePrefab: {fileID: 3971563117998069597, guid: cc3953ae781c42e40a08ebb821706a7f, type: 3}
   spawnRadius: 0.35
   spawnHeightOffset: 0.15
+  appleCollisionRadius: 0.08
+  maxSpawnAttempts: 30
+  audioSource: {fileID: 0}
+  pilihLebihBanyakClip: {fileID: 8300000, guid: b5a1ca3f88ec2e646891501ebe0a18e2, type: 3}
+  pilihLebihSedikitClip: {fileID: 8300000, guid: 82c77458656a57741bc1eb470a183409, type: 3}
+  jawabanBenarClip: {fileID: 8300000, guid: efa86330a9b282c48b3716c7088968c0, type: 3}
+  jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
+  levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
+  levelIncompleteClip: {fileID: 8300000, guid: 44093f4385473084ebf3379c9e015384, type: 3}
   applesOnLeft: 0
   applesOnRight: 0
+  currentQuestionAsksLess: 0
+  progressSubject: Math
+  progressLevelNumber: 1
+  minimumCorrectToPass: 4
 --- !u!4 &1231139219
 Transform:
   m_ObjectHideFlags: 0
@@ -1800,6 +1814,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1231139220
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231139217}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1252927642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2823,6 +2934,7 @@ GameObject:
   - component: {fileID: 1668050750}
   - component: {fileID: 1668050749}
   - component: {fileID: 1668050748}
+  - component: {fileID: 1668050751}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -2892,7 +3004,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1668050749}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1668050751}
+        m_TargetAssemblyTypeName: ARSceneLoader, Assembly-CSharp
+        m_MethodName: LoadARScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MathLevel
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1668050749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2931,6 +3055,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668050746}
   m_CullTransparentMesh: 1
+--- !u!114 &1668050751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1668050746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832278b8e963d80438d5d47f5e4f0131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARSceneLoader
 --- !u!1 &1670242026
 GameObject:
   m_ObjectHideFlags: 0
@@ -2949,7 +3085,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1670242027
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3026,9 +3162,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultPanel
   resultGraphic: {fileID: 2031237859}
+  statusLevelText: {fileID: 188844419}
   resultText: {fileID: 381867107}
   coinText: {fileID: 0}
   retryButton: {fileID: 1581510204}
+  completeStatusText: Kamu Berhasil
+  incompleteStatusText: Coba Lagi
 --- !u!1 &1755891796
 GameObject:
   m_ObjectHideFlags: 0
@@ -3450,7 +3589,10 @@ MonoBehaviour:
   mejaPrefab: {fileID: 7801318130351369284, guid: c4d576368580460438aebb0b228834f2, type: 3}
   ml1GameManager: {fileID: 1231139218}
   ml2GameManager: {fileID: 0}
+  ml3GameManager: {fileID: 0}
   ll1GameManager: {fileID: 0}
+  ll2GameManager: {fileID: 0}
+  ll3GameManager: {fileID: 0}
 --- !u!1 &2031237857
 GameObject:
   m_ObjectHideFlags: 0
@@ -3603,7 +3745,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0

@@ -34,8 +34,8 @@ public class UIManager : MonoBehaviour
     {
         if (ButtonSfxManager.Instance == null) return;
 
-        ButtonSfxManager.Instance.PlayButtonClick();
         ButtonSfxManager.Instance.ToggleSound();
+        BackgroundMusicManager.Instance?.RefreshPlayback();
     }
 
     public void GoToLearning()

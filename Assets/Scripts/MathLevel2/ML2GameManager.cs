@@ -1,12 +1,26 @@
 using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(AudioSource))]
 public class ML2GameManager : MonoBehaviour
 {
     [Header("Referensi Scene")]
     public DropZone dropZone;
     public AppleBasket appleBasket;
     public GameObject mejaPrefab;
+
+    [Header("Audio")]
+    public AudioSource audioSource;
+    [Tooltip("Audio instruksi yang hanya diputar sekali saat soal pertama dimulai.")]
+    public AudioClip instruksiClip;
+    [Tooltip("Audio yang diputar saat jawaban benar.")]
+    public AudioClip jawabanBenarClip;
+    [Tooltip("Audio yang diputar saat jawaban salah.")]
+    public AudioClip jawabanSalahClip;
+    [Tooltip("Audio yang diputar saat level selesai dan pemain lulus.")]
+    public AudioClip levelCompleteClip;
+    [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
+    public AudioClip levelIncompleteClip;
 
     // ─── Data Soal ───────────────────────────────────────────
     private struct Question
@@ -30,6 +44,7 @@ public class ML2GameManager : MonoBehaviour
     private const int MAX_ROUNDS = 5;
     private int correctAnswers = 0;
     private bool questionActive = false;
+    private bool instructionAudioPlayed = false;
 
     [Header("Progress")]
     public string progressSubject = "Math";
@@ -43,6 +58,15 @@ public class ML2GameManager : MonoBehaviour
     {
         uiManager = FindFirstObjectByType<ML2UIManager>();
         activeQuestions = arrangeQuestions;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f;
 
         Debug.Log("[ML2GameManager] Start - Mode: Susun Hasil");
     }
@@ -62,6 +86,7 @@ public class ML2GameManager : MonoBehaviour
         currentRound = 0;
         correctAnswers = 0;
         questionActive = false;
+        instructionAudioPlayed = false;
         if (uiManager != null) uiManager.ResetUI();
         StartNextQuestion();
     }
@@ -83,7 +108,38 @@ public class ML2GameManager : MonoBehaviour
         if (uiManager != null)
             uiManager.ShowQuestion(q.display, currentRound, MAX_ROUNDS);
 
+        PlayInstructionAudioOnce();
+
         Debug.Log($"[ML2GameManager] Ronde {currentRound}: {q.display} | Jawaban: {q.answer}");
+    }
+
+    void PlayInstructionAudioOnce()
+    {
+        if (instructionAudioPlayed)
+            return;
+
+        instructionAudioPlayed = true;
+        PlayAudio(instruksiClip, true);
+    }
+
+    void PlayAudio(AudioClip clip, bool stopCurrentAudio = false)
+    {
+        if (audioSource == null || clip == null)
+            return;
+
+        if (ButtonSfxManager.Instance != null && !ButtonSfxManager.Instance.IsSoundOn())
+            return;
+
+        if (stopCurrentAudio)
+            audioSource.Stop();
+
+        audioSource.PlayOneShot(clip);
+    }
+
+    void StopAudio()
+    {
+        if (audioSource != null)
+            audioSource.Stop();
     }
 
     public void SubmitAnswer()
@@ -97,6 +153,8 @@ public class ML2GameManager : MonoBehaviour
         questionActive = false;
 
         if (isCorrect) correctAnswers++;
+        StopAudio();
+        PlayAudio(isCorrect ? jawabanBenarClip : jawabanSalahClip);
 
         if (uiManager != null)
             uiManager.ShowFeedback(isCorrect, playerAnswer, correctAnswer);
@@ -117,6 +175,8 @@ public class ML2GameManager : MonoBehaviour
     void ShowFinalResult()
     {
         ClearAllApples();
+        StopAudio();
+        PlayAudio(correctAnswers >= minimumCorrectToPass ? levelCompleteClip : levelIncompleteClip);
 
         LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctAnswers, minimumCorrectToPass);
 

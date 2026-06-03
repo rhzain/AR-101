@@ -627,7 +627,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &242393598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1357,6 +1357,7 @@ MonoBehaviour:
   questionText: {fileID: 1736813876}
   hintText: {fileID: 1065244606}
   targetCountText: {fileID: 1755891798}
+  wrongFeedbackDuration: 1.25
   answerInputLabel: {fileID: 0}
   answerInputContainer: {fileID: 0}
   answerInput: {fileID: 1287868258}
@@ -1738,6 +1739,7 @@ GameObject:
   m_Component:
   - component: {fileID: 487216761}
   - component: {fileID: 487216762}
+  - component: {fileID: 487216763}
   m_Layer: 0
   m_Name: ML3GameManager
   m_TagString: Untagged
@@ -1774,14 +1776,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MathLevel3.ML3GameManager
   tableLayout: {fileID: 1088507003}
   applePrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
-  bookPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
-  fishPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
-  candyPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
-  orangePrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
+  bookPrefab: {fileID: 6499583360244990373, guid: 24d5fd5a872a8d545a0de563796c0776, type: 3}
+  fishPrefab: {fileID: 4811394874213006648, guid: 937c5f0f05acd50478256c99095b4d09, type: 3}
+  candyPrefab: {fileID: 2093768457146405038, guid: 99d336ea4b02ac3499c7c22b833d7cda, type: 3}
+  orangePrefab: {fileID: 3623535228967838381, guid: 20a6189831b2fae4086bac137f4be92b, type: 3}
   budiPrefab: {fileID: 7128433091453961370, guid: 17584cb5b2e2ac74e9f2e3836414662b, type: 3}
   ibuPrefab: {fileID: 3367071232391383340, guid: 77b36e9640e3fcd41b223e485df93591, type: 3}
   ayahPrefab: {fileID: 8945395666063541464, guid: 1d41b25bf6af3d1409917a7cf7092359, type: 3}
   sitiPrefab: {fileID: 7121819781283433556, guid: 31f67419251ec464087a1915c39da322, type: 3}
+  audioSource: {fileID: 0}
+  jawabanBenarClip: {fileID: 8300000, guid: efa86330a9b282c48b3716c7088968c0, type: 3}
+  jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
+  levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
+  levelIncompleteClip: {fileID: 8300000, guid: 44093f4385473084ebf3379c9e015384, type: 3}
+  hintInstructionAudios: []
   buildQuestionsFromCode: 1
   questions:
   - storyText: Budi memiliki 5 apel. Ibu memberi Budi 3 apel lagi.
@@ -1793,24 +1801,33 @@ MonoBehaviour:
       characterPrefab: {fileID: 7128433091453961370, guid: 17584cb5b2e2ac74e9f2e3836414662b, type: 3}
       label: Budi
       itemCount: 5
+      zoneMode: 0
+      showTableModel: 1
     - slot: 2
       active: 1
       characterPrefab: {fileID: 3367071232391383340, guid: 77b36e9640e3fcd41b223e485df93591, type: 3}
       label: Ibu
-      itemCount: 3
+      itemCount: 6
+      zoneMode: 0
+      showTableModel: 1
     - slot: 3
       active: 0
       characterPrefab: {fileID: 0}
       label: 
       itemCount: 0
+      zoneMode: 0
+      showTableModel: 1
     steps:
     - questionText: Berapa apel yang dimiliki Budi sekarang?
-      hintText: Pindahkan semua apel Ibu ke tempat apel Budi.
+      hintText: Pindahkan 3 apel dari meja Ibu ke meja Budi.
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 8
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: 8
     - questionText: Apakah jumlah apel Budi lebih dari 7?
       hintText: Hitung apel Budi lalu bandingkan dengan angka 7.
@@ -1819,9 +1836,12 @@ MonoBehaviour:
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 8
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: ya|iya
   - storyText: Di meja ada 9 buku. Siti mengambil 2 buku.
-    itemPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
+    itemPrefab: {fileID: 6499583360244990373, guid: 24d5fd5a872a8d545a0de563796c0776, type: 3}
     itemId: Book
     slots:
     - slot: 1
@@ -1829,16 +1849,22 @@ MonoBehaviour:
       characterPrefab: {fileID: 7121819781283433556, guid: 31f67419251ec464087a1915c39da322, type: 3}
       label: Siti
       itemCount: 0
+      zoneMode: 0
+      showTableModel: 1
     - slot: 2
       active: 1
       characterPrefab: {fileID: 0}
       label: Meja
       itemCount: 9
+      zoneMode: 0
+      showTableModel: 1
     - slot: 3
       active: 0
       characterPrefab: {fileID: 0}
       label: 
       itemCount: 0
+      zoneMode: 0
+      showTableModel: 1
     steps:
     - questionText: Berapa buku yang tersisa di meja?
       hintText: Berikan 2 buku kepada Siti.
@@ -1847,6 +1873,9 @@ MonoBehaviour:
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 7
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: 7
     - questionText: Apakah jumlah buku yang tersisa kurang dari 8?
       hintText: Bandingkan jumlah buku yang tersisa dengan angka 8.
@@ -1855,9 +1884,12 @@ MonoBehaviour:
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 7
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: ya|iya
-  - storyText: Ibu membeli 6 ikan di pasar. Ayah membeli 4 ikan lagi.
-    itemPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
+  - storyText: Ibu memiliki 6 ikan. Ayah memberi Ibu 4 ikan lagi.
+    itemPrefab: {fileID: 4811394874213006648, guid: 937c5f0f05acd50478256c99095b4d09, type: 3}
     itemId: Fish
     slots:
     - slot: 1
@@ -1865,107 +1897,140 @@ MonoBehaviour:
       characterPrefab: {fileID: 3367071232391383340, guid: 77b36e9640e3fcd41b223e485df93591, type: 3}
       label: Ibu
       itemCount: 6
+      zoneMode: 0
+      showTableModel: 1
     - slot: 2
       active: 1
       characterPrefab: {fileID: 8945395666063541464, guid: 1d41b25bf6af3d1409917a7cf7092359, type: 3}
       label: Ayah
-      itemCount: 4
+      itemCount: 5
+      zoneMode: 0
+      showTableModel: 1
     - slot: 3
       active: 0
       characterPrefab: {fileID: 0}
       label: 
       itemCount: 0
+      zoneMode: 0
+      showTableModel: 1
     steps:
     - questionText: Mana yang lebih banyak, ikan Ibu atau ikan Ayah?
-      hintText: Lihat jumlah ikan Ibu dan Ayah, lalu tap meja yang ikannya lebih
-        banyak.
+      hintText: Ketuk meja yang ikannya lebih banyak.
       interaction: 1
       targetSlot: 1
       correctSelectedSlot: 1
       validateTargetCount: 1
       targetCountAnswer: 6
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: ibu|ikan ibu
-    - questionText: Berapa jumlah ikan sekarang?
-      hintText: Pindahkan semua ikan Ayah ke meja Ibu.
+    - questionText: Berapa ikan yang dimiliki Ibu sekarang?
+      hintText: Pindahkan 4 ikan dari meja Ayah ke meja Ibu.
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 10
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: 10
-  - storyText: Budi memiliki 7 permen. Siti memiliki 5 permen.
+  - storyText: Budi memiliki 7 apel. Siti memiliki 5 apel.
     itemPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
-    itemId: Candy
+    itemId: Apple
     slots:
     - slot: 1
       active: 1
       characterPrefab: {fileID: 7128433091453961370, guid: 17584cb5b2e2ac74e9f2e3836414662b, type: 3}
       label: Budi
       itemCount: 7
+      zoneMode: 0
+      showTableModel: 1
     - slot: 2
+      active: 1
+      characterPrefab: {fileID: 0}
+      label: Keranjang
+      itemCount: 0
+      zoneMode: 1
+      showTableModel: 0
+    - slot: 3
       active: 1
       characterPrefab: {fileID: 7121819781283433556, guid: 31f67419251ec464087a1915c39da322, type: 3}
       label: Siti
       itemCount: 5
-    - slot: 3
-      active: 0
-      characterPrefab: {fileID: 0}
-      label: 
-      itemCount: 0
+      zoneMode: 0
+      showTableModel: 1
     steps:
-    - questionText: Siapa yang memiliki permen lebih banyak?
-      hintText: Lihat jumlah permen Budi dan Siti, lalu tap meja yang permennya lebih
-        banyak.
+    - questionText: Siapa yang memiliki apel lebih banyak?
+      hintText: Ketuk meja yang apelnya lebih banyak.
       interaction: 1
       targetSlot: 1
       correctSelectedSlot: 1
       validateTargetCount: 1
       targetCountAnswer: 7
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: budi
-    - questionText: Berapa selisih jumlah permen mereka?
-      hintText: Pindahkan 5 permen Budi ke meja Siti untuk dipasangkan. Permen Budi
-        yang tersisa adalah selisihnya.
+    - questionText: Berapa selisih jumlah apel mereka?
+      hintText: Buang satu persatu apel dari kedua meja untuk mendapat selisih
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 2
+      validateSecondaryTargetCount: 1
+      secondaryTargetSlot: 3
+      secondaryTargetCountAnswer: 0
       answer: 2
-  - storyText: Di keranjang ada 8 jeruk. Ibu menambahkan 2 jeruk lagi.
-    itemPrefab: {fileID: 8942008635401449110, guid: 0dd043a9b8b715243bf50fc7764a517a, type: 3}
+  - storyText: Di meja ada 8 wortel. Ibu menambahkan 2 wortel ke meja.
+    itemPrefab: {fileID: 3623535228967838381, guid: 20a6189831b2fae4086bac137f4be92b, type: 3}
     itemId: Orange
     slots:
     - slot: 1
       active: 1
       characterPrefab: {fileID: 0}
-      label: Keranjang
+      label: Meja
       itemCount: 8
+      zoneMode: 0
+      showTableModel: 1
     - slot: 2
       active: 1
       characterPrefab: {fileID: 3367071232391383340, guid: 77b36e9640e3fcd41b223e485df93591, type: 3}
       label: Ibu
-      itemCount: 2
+      itemCount: 5
+      zoneMode: 0
+      showTableModel: 1
     - slot: 3
       active: 0
       characterPrefab: {fileID: 0}
       label: 
       itemCount: 0
+      zoneMode: 0
+      showTableModel: 1
     steps:
-    - questionText: Berapa jumlah jeruk sekarang?
-      hintText: Masukkan semua jeruk Ibu ke dalam keranjang.
+    - questionText: Berapa jumlah wortel di meja sekarang?
+      hintText: Pindahkan 2 wortel dari meja Ibu ke meja utama.
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 10
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: 10
-    - questionText: Apakah jumlah jeruk lebih dari 9?
-      hintText: Bandingkan jumlah jeruk dengan angka 9.
+    - questionText: Apakah jumlah wortel di meja lebih dari 9?
+      hintText: Bandingkan jumlah wortel di meja dengan angka 9.
       interaction: 3
       targetSlot: 1
       correctSelectedSlot: 0
       validateTargetCount: 1
       targetCountAnswer: 10
+      validateSecondaryTargetCount: 0
+      secondaryTargetSlot: 0
+      secondaryTargetCountAnswer: 0
       answer: ya|iya
   spawnRadius: 0.2
   spawnHeightOffset: 0.05
@@ -1977,6 +2042,103 @@ MonoBehaviour:
   nextStepDelay: 1.25
   nextQuestionDelay: 2
   acceptCorrectTargetCountForNumericAnswers: 1
+--- !u!82 &487216763
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487216759}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &516726636
 GameObject:
   m_ObjectHideFlags: 0
@@ -2581,7 +2743,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 42}
+  m_AnchoredPosition: {x: 0, y: 70}
   m_SizeDelta: {x: 687.1892, y: 100.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &868396726
@@ -2839,7 +3001,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Soal 1 dari 5
+  m_text: Scan Area Datar dan Tekan Areanya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
   m_sharedMaterial: {fileID: 1359437714236718880, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
@@ -2950,6 +3112,7 @@ GameObject:
   - component: {fileID: 938480442}
   - component: {fileID: 938480441}
   - component: {fileID: 938480440}
+  - component: {fileID: 938480443}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -3019,7 +3182,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 938480441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 938480443}
+        m_TargetAssemblyTypeName: ARSceneLoader, Assembly-CSharp
+        m_MethodName: LoadARScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MathLevel
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &938480441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3058,6 +3233,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 938480438}
   m_CullTransparentMesh: 1
+--- !u!114 &938480443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938480438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832278b8e963d80438d5d47f5e4f0131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARSceneLoader
 --- !u!1 &964139412
 GameObject:
   m_ObjectHideFlags: 0
@@ -5243,9 +5430,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultPanel
   resultGraphic: {fileID: 317690133}
+  statusLevelText: {fileID: 964139414}
   resultText: {fileID: 1127065798}
   coinText: {fileID: 0}
   retryButton: {fileID: 1076478988}
+  completeStatusText: Kamu Berhasil
+  incompleteStatusText: Coba Lagi
 --- !u!224 &1509516253
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6222,6 +6412,8 @@ MonoBehaviour:
   ml2GameManager: {fileID: 0}
   ml3GameManager: {fileID: 487216762}
   ll1GameManager: {fileID: 0}
+  ll2GameManager: {fileID: 0}
+  ll3GameManager: {fileID: 0}
 --- !u!1 &2095501295
 GameObject:
   m_ObjectHideFlags: 0

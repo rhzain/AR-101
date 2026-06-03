@@ -6,9 +6,12 @@ using UnityEngine.Events;
 public class ResultPanel : MonoBehaviour
 {
     public Image resultGraphic;
+    public TextMeshProUGUI statusLevelText;
     public TextMeshProUGUI resultText;
     public TextMeshProUGUI coinText; // Jika ada sistem koin
     public Button retryButton;
+    public string completeStatusText = "Kamu Berhasil";
+    public string incompleteStatusText = "Coba Lagi";
 
     public void Show(int correctCount, int totalRounds, Sprite resultSprite)
     {
@@ -20,6 +23,7 @@ public class ResultPanel : MonoBehaviour
         gameObject.SetActive(true); // Aktifkan seluruh panel
         
         if (resultGraphic != null) resultGraphic.sprite = resultSprite;
+        if (statusLevelText != null) statusLevelText.text = isPassed ? completeStatusText : incompleteStatusText;
         if (resultText != null) resultText.text = $"Benar {correctCount} dari {totalRounds}";
         if (coinText != null) coinText.text = $"+{correctCount * 10}"; // Contoh perhitungan koin
 

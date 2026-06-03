@@ -38,6 +38,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LiteracyL3.unity
     guid: 11c1cb35ca12f7644b0a7857c816fd5a
+  - enabled: 1
+    path: Assets/Scenes/LiteracyL2.unity
+    guid: 09f634c3850f8b247adf0bb86f4decb8
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 3ad47cb40d15ccd40987bda6e6aa054a, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

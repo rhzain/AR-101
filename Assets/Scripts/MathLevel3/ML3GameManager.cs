@@ -13,8 +13,18 @@ namespace MathLevel3
         TextAnswer
     }
 
+    [RequireComponent(typeof(AudioSource))]
     public class ML3GameManager : MonoBehaviour
     {
+        [System.Serializable]
+        public class HintInstructionAudio
+        {
+            [TextArea(2, 4)]
+            public string hintText;
+
+            public AudioClip audioClip;
+        }
+
         [System.Serializable]
         public class SlotSetup
         {
@@ -23,6 +33,8 @@ namespace MathLevel3
             public GameObject characterPrefab;
             public string label;
             public int itemCount;
+            public ItemDropZone.ZoneMode zoneMode = ItemDropZone.ZoneMode.CountItems;
+            public bool showTableModel = true;
         }
 
         [System.Serializable]
@@ -38,6 +50,9 @@ namespace MathLevel3
             public ML3SlotId correctSelectedSlot = ML3SlotId.None;
             public bool validateTargetCount = true;
             public int targetCountAnswer;
+            public bool validateSecondaryTargetCount = false;
+            public ML3SlotId secondaryTargetSlot = ML3SlotId.None;
+            public int secondaryTargetCountAnswer;
             public string answer;
         }
 
@@ -73,6 +88,19 @@ namespace MathLevel3
         public GameObject ibuPrefab;
         public GameObject ayahPrefab;
         public GameObject sitiPrefab;
+
+        [Header("Audio")]
+        public AudioSource audioSource;
+        [Tooltip("Audio yang diputar saat jawaban benar.")]
+        public AudioClip jawabanBenarClip;
+        [Tooltip("Audio yang diputar saat jawaban salah.")]
+        public AudioClip jawabanSalahClip;
+        [Tooltip("Audio yang diputar saat level selesai dan pemain lulus.")]
+        public AudioClip levelCompleteClip;
+        [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
+        public AudioClip levelIncompleteClip;
+        [Tooltip("Audio instruksi yang dicocokkan dengan hintText setiap langkah.")]
+        public HintInstructionAudio[] hintInstructionAudios;
 
         [Header("Data Soal")]
         [Tooltip("Aktifkan agar 5 soal Level 3 dibuat dari kode setiap StartGame.")]
@@ -132,6 +160,15 @@ namespace MathLevel3
 
             if (tableLayout == null)
                 tableLayout = FindFirstObjectByType<ML3TableLayout>();
+
+            if (audioSource == null)
+                audioSource = GetComponent<AudioSource>();
+
+            if (audioSource == null)
+                audioSource = gameObject.AddComponent<AudioSource>();
+
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 0f;
         }
 
         private void Update()
@@ -156,7 +193,7 @@ namespace MathLevel3
                     slots = new[]
                     {
                         new SlotSetup { slot = ML3SlotId.Left, active = true, characterPrefab = budiPrefab, label = "Budi", itemCount = 5 },
-                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = ibuPrefab, label = "Ibu", itemCount = 3 },
+                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = ibuPrefab, label = "Ibu", itemCount = 6 },
                         new SlotSetup { slot = ML3SlotId.Right, active = false, label = "", itemCount = 0 }
                     },
                     steps = new[]
@@ -164,7 +201,7 @@ namespace MathLevel3
                         new QuestionStep
                         {
                             questionText = "Berapa apel yang dimiliki Budi sekarang?",
-                            hintText = "Pindahkan semua apel Ibu ke tempat apel Budi.",
+                            hintText = "Pindahkan 3 apel dari meja Ibu ke meja Budi.",
                             interaction = ML3StepInteraction.DragItems,
                             targetSlot = ML3SlotId.Left,
                             validateTargetCount = true,
@@ -220,13 +257,13 @@ namespace MathLevel3
                 },
                 new StoryQuestion
                 {
-                    storyText = "Ibu membeli 6 ikan di pasar. Ayah membeli 4 ikan lagi.",
+                    storyText = "Ibu memiliki 6 ikan. Ayah memberi Ibu 4 ikan lagi.",
                     itemPrefab = fishPrefab,
                     itemId = "Fish",
                     slots = new[]
                     {
                         new SlotSetup { slot = ML3SlotId.Left, active = true, characterPrefab = ibuPrefab, label = "Ibu", itemCount = 6 },
-                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = ayahPrefab, label = "Ayah", itemCount = 4 },
+                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = ayahPrefab, label = "Ayah", itemCount = 5 },
                         new SlotSetup { slot = ML3SlotId.Right, active = false, label = "", itemCount = 0 }
                     },
                     steps = new[]
@@ -234,7 +271,7 @@ namespace MathLevel3
                         new QuestionStep
                         {
                             questionText = "Mana yang lebih banyak, ikan Ibu atau ikan Ayah?",
-                            hintText = "Lihat jumlah ikan Ibu dan Ayah, lalu tap meja yang ikannya lebih banyak.",
+                            hintText = "Ketuk meja yang ikannya lebih banyak.",
                             interaction = ML3StepInteraction.SelectSlot,
                             targetSlot = ML3SlotId.Left,
                             correctSelectedSlot = ML3SlotId.Left,
@@ -244,8 +281,8 @@ namespace MathLevel3
                         },
                         new QuestionStep
                         {
-                            questionText = "Berapa jumlah ikan sekarang?",
-                            hintText = "Pindahkan semua ikan Ayah ke meja Ibu.",
+                            questionText = "Berapa ikan yang dimiliki Ibu sekarang?",
+                            hintText = "Pindahkan 4 ikan dari meja Ayah ke meja Ibu.",
                             interaction = ML3StepInteraction.DragItems,
                             targetSlot = ML3SlotId.Left,
                             validateTargetCount = true,
@@ -256,21 +293,21 @@ namespace MathLevel3
                 },
                 new StoryQuestion
                 {
-                    storyText = "Budi memiliki 7 permen. Siti memiliki 5 permen.",
-                    itemPrefab = candyPrefab,
-                    itemId = "Candy",
+                    storyText = "Budi memiliki 7 apel. Siti memiliki 5 apel.",
+                    itemPrefab = applePrefab,
+                    itemId = "Apple",
                     slots = new[]
                     {
                         new SlotSetup { slot = ML3SlotId.Left, active = true, characterPrefab = budiPrefab, label = "Budi", itemCount = 7 },
-                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = sitiPrefab, label = "Siti", itemCount = 5 },
-                        new SlotSetup { slot = ML3SlotId.Right, active = false, label = "", itemCount = 0 }
+                        new SlotSetup { slot = ML3SlotId.Center, active = true, label = "Keranjang", itemCount = 0, zoneMode = ItemDropZone.ZoneMode.RemoveItems, showTableModel = false },
+                        new SlotSetup { slot = ML3SlotId.Right, active = true, characterPrefab = sitiPrefab, label = "Siti", itemCount = 5 }
                     },
                     steps = new[]
                     {
                         new QuestionStep
                         {
-                            questionText = "Siapa yang memiliki permen lebih banyak?",
-                            hintText = "Lihat jumlah permen Budi dan Siti, lalu tap meja yang permennya lebih banyak.",
+                            questionText = "Siapa yang memiliki apel lebih banyak?",
+                            hintText = "Ketuk meja yang apelnya lebih banyak.",
                             interaction = ML3StepInteraction.SelectSlot,
                             targetSlot = ML3SlotId.Left,
                             correctSelectedSlot = ML3SlotId.Left,
@@ -280,33 +317,36 @@ namespace MathLevel3
                         },
                         new QuestionStep
                         {
-                            questionText = "Berapa selisih jumlah permen mereka?",
-                            hintText = "Pindahkan 5 permen Budi ke meja Siti untuk dipasangkan. Permen Budi yang tersisa adalah selisihnya.",
+                            questionText = "Berapa selisih jumlah apel mereka?",
+                            hintText = "Buang satu persatu apel dari kedua meja untuk mendapat selisih",
                             interaction = ML3StepInteraction.DragItems,
                             targetSlot = ML3SlotId.Left,
                             validateTargetCount = true,
                             targetCountAnswer = 2,
+                            validateSecondaryTargetCount = true,
+                            secondaryTargetSlot = ML3SlotId.Right,
+                            secondaryTargetCountAnswer = 0,
                             answer = "2"
                         }
                     }
                 },
                 new StoryQuestion
                 {
-                    storyText = "Di keranjang ada 8 jeruk. Ibu menambahkan 2 jeruk lagi.",
+                    storyText = "Di meja ada 8 wortel. Ibu menambahkan 2 wortel ke meja.",
                     itemPrefab = orangePrefab,
                     itemId = "Orange",
                     slots = new[]
                     {
-                        new SlotSetup { slot = ML3SlotId.Left, active = true, label = "Keranjang", itemCount = 8 },
-                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = ibuPrefab, label = "Ibu", itemCount = 2 },
+                        new SlotSetup { slot = ML3SlotId.Left, active = true, label = "Meja", itemCount = 8 },
+                        new SlotSetup { slot = ML3SlotId.Center, active = true, characterPrefab = ibuPrefab, label = "Ibu", itemCount = 5 },
                         new SlotSetup { slot = ML3SlotId.Right, active = false, label = "", itemCount = 0 }
                     },
                     steps = new[]
                     {
                         new QuestionStep
                         {
-                            questionText = "Berapa jumlah jeruk sekarang?",
-                            hintText = "Masukkan semua jeruk Ibu ke dalam keranjang.",
+                            questionText = "Berapa jumlah wortel di meja sekarang?",
+                            hintText = "Pindahkan 2 wortel dari meja Ibu ke meja utama.",
                             interaction = ML3StepInteraction.DragItems,
                             targetSlot = ML3SlotId.Left,
                             validateTargetCount = true,
@@ -315,8 +355,8 @@ namespace MathLevel3
                         },
                         new QuestionStep
                         {
-                            questionText = "Apakah jumlah jeruk lebih dari 9?",
-                            hintText = "Bandingkan jumlah jeruk dengan angka 9.",
+                            questionText = "Apakah jumlah wortel di meja lebih dari 9?",
+                            hintText = "Bandingkan jumlah wortel di meja dengan angka 9.",
                             interaction = ML3StepInteraction.TextAnswer,
                             targetSlot = ML3SlotId.Left,
                             validateTargetCount = true,
@@ -345,13 +385,23 @@ namespace MathLevel3
                 || questions[1].steps[1].interaction != ML3StepInteraction.TextAnswer
                 || questions[4].steps[1].interaction != ML3StepInteraction.TextAnswer
                 || questions[0].slots[1].slot != ML3SlotId.Center
-                || questions[0].slots[1].active == false)
+                || questions[0].slots[1].active == false
+                || questions[0].slots[1].itemCount != 6
+                || questions[2].slots[1].itemCount != 5
+                || questions[4].slots[1].itemCount != 5
+                || questions[3].steps[1].validateSecondaryTargetCount == false
+                || questions[3].steps[1].secondaryTargetSlot != ML3SlotId.Right
+                || questions[3].steps[1].secondaryTargetCountAnswer != 0
+                || questions[3].slots[1].zoneMode != ItemDropZone.ZoneMode.RemoveItems
+                || questions[3].slots[1].showTableModel
+                || questions[3].slots[2].slot != ML3SlotId.Right
+                || questions[3].slots[2].active == false)
                 return true;
 
             return questions[0].itemPrefab != applePrefab
                 || questions[1].itemPrefab != bookPrefab
                 || questions[2].itemPrefab != fishPrefab
-                || questions[3].itemPrefab != candyPrefab
+                || questions[3].itemPrefab != applePrefab
                 || questions[4].itemPrefab != orangePrefab;
         }
 
@@ -383,7 +433,7 @@ namespace MathLevel3
             bool needsTextAnswer = StepNeedsTextAnswer(step);
             bool answerCorrect = !needsTextAnswer || IsAnswerCorrect(playerAnswer, step.answer);
             int playerCount = GetTargetCount(step);
-            bool targetCorrect = !step.validateTargetCount || playerCount == step.targetCountAnswer;
+            bool targetCorrect = IsTargetCountCorrect(step, playerCount);
             if (needsTextAnswer && !answerCorrect && acceptCorrectTargetCountForNumericAnswers && targetCorrect && IsNumericAnswer(step.answer, step.targetCountAnswer))
                 answerCorrect = true;
 
@@ -392,7 +442,11 @@ namespace MathLevel3
             if (!isCorrect)
                 currentQuestionHadWrongAnswer = true;
 
+            StopAudio();
+            PlayAudio(isCorrect ? jawabanBenarClip : jawabanSalahClip);
+
             if (uiManager != null)
+            {
                 uiManager.ShowFeedback(
                     isCorrect,
                     answerCorrect,
@@ -402,6 +456,8 @@ namespace MathLevel3
                     playerCount,
                     step.targetCountAnswer
                 );
+
+            }
 
             if (isCorrect)
             {
@@ -413,6 +469,7 @@ namespace MathLevel3
         public void RestartGame()
         {
             StopAllCoroutines();
+            StopAudio();
             ClearLevelItems();
             StartGame();
         }
@@ -475,7 +532,7 @@ namespace MathLevel3
                 if (slotSetup.characterPrefab == null && !string.IsNullOrWhiteSpace(slotSetup.label))
                     Debug.LogWarning($"[ML3GameManager] Character prefab untuk label '{slotSetup.label}' belum di-assign.");
 
-                slot.Setup(slotSetup.label, slotSetup.characterPrefab, question.itemId);
+                slot.Setup(slotSetup.label, slotSetup.characterPrefab, question.itemId, slotSetup.zoneMode, slotSetup.showTableModel);
                 SpawnItemsAtSlot(question.itemPrefab, question.itemId, slot, slotSetup.itemCount);
             }
         }
@@ -497,6 +554,8 @@ namespace MathLevel3
                     GetTargetSlot(CurrentStep)
                 );
             }
+
+            PlayHintInstructionAudio(CurrentStep.hintText);
         }
 
         private void TrySelectSlot(Vector2 screenPosition)
@@ -520,14 +579,20 @@ namespace MathLevel3
             QuestionStep step = CurrentStep;
             bool selectionCorrect = selectedSlotId == step.correctSelectedSlot;
             int playerCount = GetTargetCount(step);
-            bool targetCorrect = !step.validateTargetCount || playerCount == step.targetCountAnswer;
+            bool targetCorrect = IsTargetCountCorrect(step, playerCount);
             bool isCorrect = selectionCorrect && targetCorrect;
 
             if (!isCorrect)
                 currentQuestionHadWrongAnswer = true;
 
+            StopAudio();
+            PlayAudio(isCorrect ? jawabanBenarClip : jawabanSalahClip);
+
             if (uiManager != null)
+            {
                 uiManager.ShowSelectionFeedback(isCorrect, GetSlotLabel(step.correctSelectedSlot), GetSlotLabel(selectedSlotId));
+
+            }
 
             if (isCorrect)
             {
@@ -543,8 +608,7 @@ namespace MathLevel3
 
             if (isLastStep)
             {
-                if (!currentQuestionHadWrongAnswer)
-                    correctQuestions++;
+                correctQuestions++;
 
                 currentQuestionIndex++;
                 StartCurrentQuestion();
@@ -645,6 +709,67 @@ namespace MathLevel3
         {
             ML3Slot targetSlot = GetTargetSlot(step);
             return targetSlot != null ? targetSlot.ItemCount : -1;
+        }
+
+        private int GetSlotCount(ML3SlotId slotId)
+        {
+            ML3Slot slot = tableLayout != null ? tableLayout.GetSlot(slotId) : null;
+            return slot != null ? slot.ItemCount : -1;
+        }
+
+        private bool IsTargetCountCorrect(QuestionStep step, int playerCount)
+        {
+            bool primaryTargetCorrect = !step.validateTargetCount || playerCount == step.targetCountAnswer;
+            if (!primaryTargetCorrect)
+                return false;
+
+            if (!step.validateSecondaryTargetCount)
+                return true;
+
+            return GetSlotCount(step.secondaryTargetSlot) == step.secondaryTargetCountAnswer;
+        }
+
+        private void PlayHintInstructionAudio(string hintText)
+        {
+            PlayAudio(GetHintInstructionClip(hintText), true);
+        }
+
+        private AudioClip GetHintInstructionClip(string hintText)
+        {
+            if (hintInstructionAudios == null || string.IsNullOrWhiteSpace(hintText))
+                return null;
+
+            string normalizedHint = NormalizeAnswer(hintText);
+            foreach (HintInstructionAudio hintAudio in hintInstructionAudios)
+            {
+                if (hintAudio == null || hintAudio.audioClip == null || string.IsNullOrWhiteSpace(hintAudio.hintText))
+                    continue;
+
+                if (NormalizeAnswer(hintAudio.hintText) == normalizedHint)
+                    return hintAudio.audioClip;
+            }
+
+            return null;
+        }
+
+        private void PlayAudio(AudioClip clip, bool stopCurrentAudio = false)
+        {
+            if (audioSource == null || clip == null)
+                return;
+
+            if (ButtonSfxManager.Instance != null && !ButtonSfxManager.Instance.IsSoundOn())
+                return;
+
+            if (stopCurrentAudio)
+                audioSource.Stop();
+
+            audioSource.PlayOneShot(clip);
+        }
+
+        private void StopAudio()
+        {
+            if (audioSource != null)
+                audioSource.Stop();
         }
 
         private ML3SlotId GetSlotId(ML3Slot slot)
@@ -759,6 +884,8 @@ namespace MathLevel3
         {
             ClearLevelItems();
             questionActive = false;
+            StopAudio();
+            PlayAudio(correctQuestions >= minimumCorrectToPass ? levelCompleteClip : levelIncompleteClip);
 
             LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctQuestions, minimumCorrectToPass);
 

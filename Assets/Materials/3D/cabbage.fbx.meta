@@ -3,7 +3,12 @@ guid: 8746b0e4635edc44b9ad04e521e7d3e7
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cabbage_material
+    second: {fileID: 2100000, guid: a4180031dc90f184cb3116909b6109fa, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -20,6 +20,7 @@ namespace LiteracyLevel2
         Large
     }
 
+    [RequireComponent(typeof(AudioSource))]
     public class LL2GameManager : MonoBehaviour
     {
         [Serializable]
@@ -84,9 +85,19 @@ namespace LiteracyLevel2
         public Material selectedMaterial;
         public Color selectedColor = new Color(1f, 0.92f, 0.25f, 1f);
         public float selectedScaleMultiplier = 1.05f;
+        [Tooltip("Nonaktifkan untuk menjaga material asli object. Selected hanya memakai scale.")]
+        public bool useMaterialSelectionEffect = false;
 
         [Header("Audio")]
         public AudioSource audioSource;
+        [Tooltip("Audio yang diputar saat jawaban benar.")]
+        public AudioClip jawabanBenarClip;
+        [Tooltip("Audio yang diputar saat jawaban salah.")]
+        public AudioClip jawabanSalahClip;
+        [Tooltip("Audio yang diputar saat level selesai dan pemain lulus.")]
+        public AudioClip levelCompleteClip;
+        [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
+        public AudioClip levelIncompleteClip;
 
         [Header("Data Soal")]
         public bool buildQuestionsFromCode = true;
@@ -139,6 +150,12 @@ namespace LiteracyLevel2
 
             if (audioSource == null)
                 audioSource = GetComponent<AudioSource>();
+
+            if (audioSource == null)
+                audioSource = gameObject.AddComponent<AudioSource>();
+
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 0f;
         }
 
         private void Update()
@@ -335,7 +352,9 @@ namespace LiteracyLevel2
             if (selectedAnswers.Count == 0)
             {
                 if (uiManager != null)
-                    uiManager.ShowFeedback(false, "Pilih jawaban dulu.");
+                    uiManager.ShowFeedback(false, "Pilih objek jawaban.");
+
+                PlayAudio(jawabanSalahClip);
                 return;
             }
 
@@ -352,6 +371,8 @@ namespace LiteracyLevel2
 
             if (!isCorrect)
                 currentStepHadWrongAnswer = true;
+
+            PlayAudio(isCorrect ? jawabanBenarClip : jawabanSalahClip);
 
             if (uiManager != null)
             {
@@ -584,7 +605,8 @@ namespace LiteracyLevel2
                     GetLabelForId(objectId),
                     selectedMaterial,
                     selectedColor,
-                    selectedScaleMultiplier
+                    selectedScaleMultiplier,
+                    useMaterialSelectionEffect
                 );
 
                 runtimeStepObjects.Add(instance);
@@ -846,6 +868,7 @@ namespace LiteracyLevel2
             stepActive = false;
 
             int finalScore = correctStepAnswers / 2;
+            PlayAudio(finalScore >= minimumCorrectToPass ? levelCompleteClip : levelIncompleteClip);
             LevelProgress.SaveResult(progressSubject, progressLevelNumber, finalScore, minimumCorrectToPass);
 
             if (uiManager != null)

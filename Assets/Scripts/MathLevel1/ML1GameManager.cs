@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class ML1GameManager : MonoBehaviour
 {
     public GameObject applePrefab;
@@ -12,6 +13,21 @@ public class ML1GameManager : MonoBehaviour
     public float appleCollisionRadius = 0.08f;
     [Tooltip("Jumlah percobaan mencari posisi kosong untuk setiap apel")]
     public int maxSpawnAttempts = 30;
+
+    [Header("Audio Pertanyaan")]
+    public AudioSource audioSource;
+    [Tooltip("Audio untuk instruksi: Pilih sisi yang lebih banyak.")]
+    public AudioClip pilihLebihBanyakClip;
+    [Tooltip("Audio untuk instruksi: Pilih sisi yang lebih sedikit.")]
+    public AudioClip pilihLebihSedikitClip;
+    [Tooltip("Audio yang diputar saat jawaban benar.")]
+    public AudioClip jawabanBenarClip;
+    [Tooltip("Audio yang diputar saat jawaban salah.")]
+    public AudioClip jawabanSalahClip;
+    [Tooltip("Audio yang diputar saat level selesai dan pemain lulus.")]
+    public AudioClip levelCompleteClip;
+    [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
+    public AudioClip levelIncompleteClip;
 
     private GameObject currentMeja;
     public int applesOnLeft;
@@ -32,6 +48,15 @@ public class ML1GameManager : MonoBehaviour
     void Awake()
     {
         uiManager = FindFirstObjectByType<ML1UIManager>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f;
     }
 
     public void SetMeja(GameObject meja)
@@ -86,6 +111,39 @@ public class ML1GameManager : MonoBehaviour
         // Update UI dengan round info
         if (uiManager != null)
             uiManager.UpdateRoundInfo(currentRound, MAX_ROUNDS, currentQuestionAsksLess);
+
+        PlayCurrentQuestionAudio();
+    }
+
+    void PlayCurrentQuestionAudio()
+    {
+        AudioClip clip = currentQuestionAsksLess ? pilihLebihSedikitClip : pilihLebihBanyakClip;
+        if (audioSource == null || clip == null)
+            return;
+
+        if (ButtonSfxManager.Instance != null && !ButtonSfxManager.Instance.IsSoundOn())
+            return;
+
+        audioSource.Stop();
+        audioSource.clip = clip;
+        audioSource.Play();
+    }
+
+    void StopQuestionAudio()
+    {
+        if (audioSource != null)
+            audioSource.Stop();
+    }
+
+    void PlayAnswerAudio(AudioClip clip)
+    {
+        if (audioSource == null || clip == null)
+            return;
+
+        if (ButtonSfxManager.Instance != null && !ButtonSfxManager.Instance.IsSoundOn())
+            return;
+
+        audioSource.PlayOneShot(clip);
     }
 
     void SpawnApplesOnBothSides(int leftCount, int rightCount)
@@ -238,6 +296,8 @@ public class ML1GameManager : MonoBehaviour
     void OnAnswerCorrect()
     {
         Debug.Log("Jawaban Benar!");
+        StopQuestionAudio();
+        PlayAnswerAudio(jawabanBenarClip);
         correctAnswers++;
         questionActive = false;
         
@@ -253,6 +313,8 @@ public class ML1GameManager : MonoBehaviour
     void OnAnswerWrong()
     {
         Debug.Log("Jawaban Salah!");
+        StopQuestionAudio();
+        PlayAnswerAudio(jawabanSalahClip);
         questionActive = false;
         
         if (uiManager != null)
@@ -268,6 +330,8 @@ public class ML1GameManager : MonoBehaviour
     {
         Debug.Log($"=== GAME OVER ===");
         Debug.Log($"Benar: {correctAnswers} dari {MAX_ROUNDS}");
+        StopQuestionAudio();
+        PlayAnswerAudio(correctAnswers >= minimumCorrectToPass ? levelCompleteClip : levelIncompleteClip);
 
         LevelProgress.SaveResult(progressSubject, progressLevelNumber, correctAnswers, minimumCorrectToPass);
         

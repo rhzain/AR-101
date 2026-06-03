@@ -12,6 +12,15 @@ public class RecycleBin : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        MathLevel3.DraggableItem draggableItem = other.GetComponentInParent<MathLevel3.DraggableItem>();
+        if (draggableItem != null)
+        {
+            draggableItem.CancelDrag();
+            Destroy(draggableItem.gameObject);
+            Debug.Log($"Item {draggableItem.itemId} dibuang ke keranjang dan dihancurkan.");
+            return;
+        }
+
         // Jika yang menyentuh keranjang adalah apel
         if (other.CompareTag("Apple"))
         {

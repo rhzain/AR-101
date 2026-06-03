@@ -12,8 +12,11 @@ namespace LiteracyLevel3
         public TextMeshProUGUI roundText;
         public TextMeshProUGUI feedbackText;
         public TextMeshProUGUI questionText;
+        [Tooltip("Optional. Isi dengan parent object yang berisi background + questionText jika ingin disembunyikan bersama.")]
+        public GameObject questionTextContainer;
         public TextMeshProUGUI instructionText;
         public TextMeshProUGUI selectedObjectText;
+        public string selectObjectHintText = "Pilih objek jawaban.";
 
         [Header("Tombol")]
         public Button submitButton;
@@ -28,8 +31,12 @@ namespace LiteracyLevel3
         public ResultPanel resultPanel;
         public Sprite[] resultSprites;
         public string nextSceneName = "LiteracyLevel";
+        public string completeButtonText = "Selesai";
+        public string incompleteButtonText = "Coba Lagi";
 
         private LL3GameManager gameManager;
+        private string currentHintText = "";
+        private string currentSelectedText = "";
 
         private void Start()
         {
@@ -68,9 +75,11 @@ namespace LiteracyLevel3
 
             if (storyText != null) storyText.text = "";
             if (roundText != null) roundText.text = "";
-            if (feedbackText != null) feedbackText.text = "";
-            if (questionText != null) questionText.text = "";
-            if (instructionText != null) instructionText.text = "";
+            currentHintText = "";
+            currentSelectedText = "";
+            ClearFeedbackTextOnly();
+            SetQuestionText("", false);
+            SetInstructionText("");
             SetSelectedObjectText("");
             SetCheckButtonVisible(false);
         }
@@ -85,11 +94,11 @@ namespace LiteracyLevel3
             if (roundText != null)
                 roundText.text = $"Cerita {currentStory}/{maxStories} - Susun Cerita";
 
-            if (feedbackText != null) feedbackText.text = "";
-            if (questionText != null) questionText.text = "Susun urutan cerita";
-            if (instructionText != null) instructionText.text = cardsReady
-                ? "Geser kartu kalimat ke slot sesuai urutan cerita, lalu tekan Cek Jawaban."
-                : "Dengarkan dan baca cerita.";
+            ClearFeedbackTextOnly();
+            SetQuestionText("", false);
+            SetInstructionText(cardsReady
+                ? "Geser kartu kalimat ke slot sesuai urutan cerita."
+                : "Dengarkan dan baca cerita.");
 
             SetSelectedObjectText("");
             SetSubmitButtonText("Cek Jawaban");
@@ -104,9 +113,9 @@ namespace LiteracyLevel3
             if (roundText != null)
                 roundText.text = $"Cerita {currentStory}/{maxStories} - Pertanyaan {currentStep}/{maxSteps}";
 
-            if (feedbackText != null) feedbackText.text = "";
-            if (questionText != null) questionText.text = step.questionText;
-            if (instructionText != null) instructionText.text = GetInstructionText(step);
+            ClearFeedbackTextOnly();
+            SetQuestionText(step.questionText, true);
+            SetInstructionText(GetInstructionText(step));
             SetSelectedObjectText("");
 
             SetSubmitButtonText("Cek Jawaban");
@@ -116,24 +125,43 @@ namespace LiteracyLevel3
 
         public void ShowFeedback(bool isCorrect, string message)
         {
+            string feedbackMessage = isCorrect ? "Benar!" : message;
+
             if (feedbackText != null)
-                feedbackText.text = isCorrect ? "Benar!" : message;
+                feedbackText.text = feedbackMessage;
+
+            if (selectedObjectText != null)
+                selectedObjectText.text = feedbackMessage;
+
+            if (instructionText != null && (instructionText == feedbackText || instructionText == selectedObjectText))
+                instructionText.text = feedbackMessage;
+
+            if (isCorrect)
+                SetCheckButtonInteractable(false);
         }
 
         public void ClearFeedback()
         {
-            if (feedbackText != null)
+            string statusText = GetSelectedOrHintText();
+
+            if (feedbackText != null && feedbackText != selectedObjectText && feedbackText != instructionText)
                 feedbackText.text = "";
+
+            if (selectedObjectText != null)
+                selectedObjectText.text = statusText;
+
+            if (instructionText != null && (instructionText == feedbackText || instructionText == selectedObjectText))
+                instructionText.text = statusText;
         }
 
         public void SetSelectedObjectText(string selectedText)
         {
+            currentSelectedText = selectedText ?? "";
+
             if (selectedObjectText == null)
                 return;
 
-            selectedObjectText.text = string.IsNullOrWhiteSpace(selectedText)
-                ? "Dipilih: -"
-                : $"Dipilih: {selectedText}";
+            selectedObjectText.text = GetSelectedOrHintText();
         }
 
         public void SetCheckButtonInteractable(bool isInteractable)
@@ -168,7 +196,7 @@ namespace LiteracyLevel3
 
             int spriteIndex = Mathf.Clamp(correctAnswers, 0, resultSprites.Length - 1);
             bool isPassed = correctAnswers >= minimumCorrectToPass;
-            string buttonText = isPassed ? "Level Berikutnya" : "Coba Lagi";
+            string buttonText = isPassed ? completeButtonText : incompleteButtonText;
 
             resultPanel.Show(correctAnswers, totalRounds, resultSprites[spriteIndex], isPassed, buttonText, () =>
             {
@@ -196,6 +224,45 @@ namespace LiteracyLevel3
             return step.interaction == LL3InteractionType.MultipleAnswer
                 ? "Pilih semua jawaban yang benar, lalu tekan Cek Jawaban."
                 : "Pilih jawabanmu, lalu tekan Cek Jawaban.";
+        }
+
+        private void SetInstructionText(string hintText)
+        {
+            currentHintText = hintText ?? "";
+
+            if (instructionText != null)
+                instructionText.text = currentHintText;
+        }
+
+        private void SetQuestionText(string text, bool isVisible)
+        {
+            GameObject targetObject = questionTextContainer != null
+                ? questionTextContainer
+                : questionText != null
+                    ? questionText.gameObject
+                    : null;
+
+            if (targetObject != null)
+                targetObject.SetActive(isVisible);
+
+            if (questionText != null)
+                questionText.text = isVisible ? text : "";
+        }
+
+        private string GetSelectedOrHintText()
+        {
+            if (!string.IsNullOrWhiteSpace(currentSelectedText))
+                return $"Dipilih: {currentSelectedText}";
+
+            return string.IsNullOrWhiteSpace(currentHintText)
+                ? selectObjectHintText
+                : currentHintText;
+        }
+
+        private void ClearFeedbackTextOnly()
+        {
+            if (feedbackText != null && feedbackText != selectedObjectText && feedbackText != instructionText)
+                feedbackText.text = "";
         }
 
         private void ShowHeaderOnly()

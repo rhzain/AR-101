@@ -766,7 +766,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &242393598
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1467,6 +1467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 487216761}
   - component: {fileID: 487216760}
+  - component: {fileID: 487216762}
   m_Layer: 0
   m_Name: ML2GameManager
   m_TagString: Untagged
@@ -1489,6 +1490,12 @@ MonoBehaviour:
   dropZone: {fileID: 1802147189}
   appleBasket: {fileID: 95234579}
   mejaPrefab: {fileID: 891759350}
+  audioSource: {fileID: 0}
+  instruksiClip: {fileID: 8300000, guid: 0e6e16731a73a8c41b25d6af19c6cdc1, type: 3}
+  jawabanBenarClip: {fileID: 8300000, guid: efa86330a9b282c48b3716c7088968c0, type: 3}
+  jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
+  levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
+  levelIncompleteClip: {fileID: 8300000, guid: 44093f4385473084ebf3379c9e015384, type: 3}
   progressSubject: Math
   progressLevelNumber: 2
   minimumCorrectToPass: 4
@@ -1507,6 +1514,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &487216762
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487216759}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &516726636
 GameObject:
   m_ObjectHideFlags: 0
@@ -2032,7 +2136,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 42}
+  m_AnchoredPosition: {x: 0, y: 70}
   m_SizeDelta: {x: 687.1892, y: 100.26}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &868396726
@@ -2295,7 +2399,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Soal 1 dari 5
+  m_text: Scan Area Datar dan Tekan Areanya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
   m_sharedMaterial: {fileID: 1359437714236718880, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
@@ -2406,6 +2510,7 @@ GameObject:
   - component: {fileID: 938480442}
   - component: {fileID: 938480441}
   - component: {fileID: 938480440}
+  - component: {fileID: 938480443}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -2475,7 +2580,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 938480441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 938480443}
+        m_TargetAssemblyTypeName: ARSceneLoader, Assembly-CSharp
+        m_MethodName: LoadARScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: MathLevel
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &938480441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2514,6 +2631,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 938480438}
   m_CullTransparentMesh: 1
+--- !u!114 &938480443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 938480438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832278b8e963d80438d5d47f5e4f0131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARSceneLoader
 --- !u!1 &939999986
 GameObject:
   m_ObjectHideFlags: 0
@@ -4810,9 +4939,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultPanel
   resultGraphic: {fileID: 317690133}
+  statusLevelText: {fileID: 964139414}
   resultText: {fileID: 1127065798}
   coinText: {fileID: 0}
   retryButton: {fileID: 1076478988}
+  completeStatusText: Kamu Berhasil
+  incompleteStatusText: Coba Lagi
 --- !u!224 &1509516253
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6314,7 +6446,10 @@ MonoBehaviour:
   mejaPrefab: {fileID: 891759350}
   ml1GameManager: {fileID: 0}
   ml2GameManager: {fileID: 487216760}
+  ml3GameManager: {fileID: 0}
   ll1GameManager: {fileID: 0}
+  ll2GameManager: {fileID: 0}
+  ll3GameManager: {fileID: 0}
 --- !u!1 &2036985067
 GameObject:
   m_ObjectHideFlags: 0

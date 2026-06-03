@@ -14,6 +14,7 @@ namespace LiteracyLevel2
         public TextMeshProUGUI questionText;
         public TextMeshProUGUI instructionText;
         public TextMeshProUGUI selectedObjectText;
+        public string selectObjectHintText = "Pilih objek jawaban.";
 
         [Header("Tombol")]
         public Button submitButton;
@@ -68,7 +69,7 @@ namespace LiteracyLevel2
 
             if (sentenceText != null) sentenceText.text = "";
             if (roundText != null) roundText.text = "";
-            if (feedbackText != null) feedbackText.text = "";
+            ClearSharedAnswerText();
             if (questionText != null) questionText.text = "";
             if (instructionText != null) instructionText.text = "";
             SetSelectedObjectText("");
@@ -85,7 +86,7 @@ namespace LiteracyLevel2
             if (roundText != null)
                 roundText.text = $"Soal {currentQuestion}/{maxQuestions}";
 
-            if (feedbackText != null) feedbackText.text = "";
+            ClearSharedAnswerText();
             if (questionText != null) questionText.text = "";
             if (instructionText != null) instructionText.text = "";
             SetSelectedObjectText("");
@@ -99,7 +100,7 @@ namespace LiteracyLevel2
             if (roundText != null)
                 roundText.text = $"Soal {currentQuestion}/{maxQuestions} - Pertanyaan {currentStep}/{maxSteps}";
 
-            if (feedbackText != null) feedbackText.text = "";
+            ClearSharedAnswerText();
             if (questionText != null) questionText.text = step.questionText;
             if (instructionText != null) instructionText.text = GetInstructionText(step);
             SetSelectedObjectText("");
@@ -113,6 +114,9 @@ namespace LiteracyLevel2
             if (feedbackText != null)
                 feedbackText.text = isCorrect ? "Benar!" : message;
 
+            if (selectedObjectText != null)
+                selectedObjectText.text = isCorrect ? "Benar!" : message;
+
             if (isCorrect)
                 SetCheckButtonInteractable(false);
         }
@@ -121,6 +125,9 @@ namespace LiteracyLevel2
         {
             if (feedbackText != null)
                 feedbackText.text = "";
+
+            if (selectedObjectText != null)
+                selectedObjectText.text = selectObjectHintText;
         }
 
         public void SetSelectedObjectText(string selectedText)
@@ -128,7 +135,15 @@ namespace LiteracyLevel2
             if (selectedObjectText == null)
                 return;
 
-            selectedObjectText.text = selectedText;
+            selectedObjectText.text = string.IsNullOrWhiteSpace(selectedText)
+                ? selectObjectHintText
+                : $"Dipilih: {selectedText}";
+        }
+
+        private void ClearSharedAnswerText()
+        {
+            if (feedbackText != null)
+                feedbackText.text = "";
         }
 
         public void SetCheckButtonInteractable(bool isInteractable)

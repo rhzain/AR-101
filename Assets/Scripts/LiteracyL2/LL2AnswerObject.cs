@@ -14,6 +14,7 @@ namespace LiteracyLevel2
         public Material selectedMaterial;
         public Color selectedColor = new Color(1f, 0.92f, 0.25f, 1f);
         public float selectedScaleMultiplier = 1.05f;
+        public bool useMaterialSelectionEffect = false;
 
         private Renderer[] renderers;
         private Material[][] normalMaterials;
@@ -27,7 +28,7 @@ namespace LiteracyLevel2
             CacheVisualState(false);
         }
 
-        public void InitializeRuntime(string id, string label, Material highlightMaterial, Color highlightColor, float scaleMultiplier)
+        public void InitializeRuntime(string id, string label, Material highlightMaterial, Color highlightColor, float scaleMultiplier, bool useMaterialEffect = false)
         {
             objectId = id;
 
@@ -39,6 +40,7 @@ namespace LiteracyLevel2
 
             selectedColor = highlightColor;
             selectedScaleMultiplier = scaleMultiplier;
+            useMaterialSelectionEffect = useMaterialEffect;
             CacheVisualState(true);
             SetSelected(false);
         }
@@ -49,6 +51,9 @@ namespace LiteracyLevel2
 
             IsSelected = selected;
             transform.localScale = selected ? normalScale * selectedScaleMultiplier : normalScale;
+
+            if (!useMaterialSelectionEffect)
+                return;
 
             for (int i = 0; i < renderers.Length; i++)
             {

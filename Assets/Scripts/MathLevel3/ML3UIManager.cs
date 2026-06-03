@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,7 @@ namespace MathLevel3
         public TextMeshProUGUI questionText;
         public TextMeshProUGUI hintText;
         public TextMeshProUGUI targetCountText;
+        public float wrongFeedbackDuration = 1.25f;
 
         [Header("Input Jawaban")]
         [Tooltip("Optional. Pakai kalau label 'Jawaban' terpisah dari TMP_InputField.")]
@@ -37,10 +39,14 @@ namespace MathLevel3
         [Header("Result Panel")]
         public ResultPanel resultPanel;
         public Sprite[] resultSprites;
+        public string completeButtonText = "Selesai";
+        public string incompleteButtonText = "Coba Lagi";
 
         private ML3GameManager gameManager;
         private ML3Slot activeTargetSlot;
         private bool showTargetCount;
+        private string currentHintText;
+        private Coroutine restoreHintCoroutine;
 
         private void Start()
         {
@@ -97,6 +103,8 @@ namespace MathLevel3
             if (feedbackText != null) feedbackText.text = "";
             if (questionText != null) questionText.text = step.questionText;
             if (hintText != null) hintText.text = step.hintText;
+            currentHintText = step.hintText;
+            StopRestoreHintCoroutine();
 
             bool needsTextAnswer = StepNeedsTextAnswer(step);
             bool needsSubmitButton = step.interaction != ML3StepInteraction.SelectSlot;
@@ -143,7 +151,7 @@ namespace MathLevel3
                 }
                 else if (!targetCorrect && playerCount >= 0)
                 {
-                    feedbackText.text = $"Belum tepat. Jumlah area target: {playerCount}, jawaban target: {correctCount}.";
+                    feedbackText.text = $"Belum tepat.";
                 }
                 else if (!answerCorrect)
                 {
@@ -154,6 +162,11 @@ namespace MathLevel3
                     feedbackText.text = "Belum tepat. Coba perhatikan lagi ceritanya.";
                 }
             }
+
+            if (isCorrect)
+                StopRestoreHintCoroutine();
+            else
+                ScheduleHintRestore();
 
             if (submitButton != null)
                 submitButton.gameObject.SetActive(!isCorrect);
@@ -167,6 +180,43 @@ namespace MathLevel3
                     ? "Benar!"
                     : $"Belum tepat. Kamu memilih {selectedSlotLabel}. Pilih meja {correctSlotLabel}.";
             }
+
+            if (isCorrect)
+                StopRestoreHintCoroutine();
+            else
+                ScheduleHintRestore();
+        }
+
+        public void ShowHint(string hint)
+        {
+            if (hintText == null)
+                return;
+
+            currentHintText = hint;
+            hintText.gameObject.SetActive(true);
+            hintText.text = hint;
+        }
+
+        private void ScheduleHintRestore()
+        {
+            StopRestoreHintCoroutine();
+            restoreHintCoroutine = StartCoroutine(RestoreHintAfterDelay());
+        }
+
+        private IEnumerator RestoreHintAfterDelay()
+        {
+            yield return new WaitForSeconds(wrongFeedbackDuration);
+            ShowHint(currentHintText);
+            restoreHintCoroutine = null;
+        }
+
+        private void StopRestoreHintCoroutine()
+        {
+            if (restoreHintCoroutine == null)
+                return;
+
+            StopCoroutine(restoreHintCoroutine);
+            restoreHintCoroutine = null;
         }
 
         private string FormatAnswer(string answer)
@@ -188,7 +238,7 @@ namespace MathLevel3
 
             int spriteIndex = Mathf.Clamp(correctAnswers, 0, resultSprites.Length - 1);
             bool isPassed = gameManager != null && correctAnswers >= gameManager.minimumCorrectToPass;
-            string buttonText = isPassed ? "Level Berikutnya" : "Coba Lagi";
+            string buttonText = isPassed ? completeButtonText : incompleteButtonText;
 
             resultPanel.Show(correctAnswers, totalRounds, resultSprites[spriteIndex], isPassed, buttonText, () =>
             {
@@ -210,6 +260,8 @@ namespace MathLevel3
             if (feedbackText != null) feedbackText.text = "";
             if (questionText != null) questionText.text = "";
             if (hintText != null) hintText.text = "";
+            currentHintText = "";
+            StopRestoreHintCoroutine();
             if (targetCountText != null) targetCountText.text = "";
             SetTargetCountVisible(false);
 

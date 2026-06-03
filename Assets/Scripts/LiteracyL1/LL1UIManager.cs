@@ -187,7 +187,7 @@ public class LL1UIManager : MonoBehaviour
         ShowHeaderOnly();
 
         if (questionText != null)  { questionText.gameObject.SetActive(true); questionText.text = ""; }
-        if (roundText != null)     { roundText.gameObject.SetActive(true);    roundText.text = ""; }
+        if (roundText != null)     roundText.gameObject.SetActive(true);
         if (feedbackText != null)  feedbackText.text = "";
         if (submitButton != null)  submitButton.gameObject.SetActive(false);
     }

@@ -359,7 +359,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 42ee6a6b72d975648a399c13ff9d6438, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cdb2d8981aefc9841bd81b38660c5439, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2420,6 +2420,7 @@ GameObject:
   - component: {fileID: 940216035}
   - component: {fileID: 940216034}
   - component: {fileID: 940216033}
+  - component: {fileID: 940216036}
   m_Layer: 0
   m_Name: CloseButton
   m_TagString: Untagged
@@ -2489,7 +2490,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 940216034}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 940216036}
+        m_TargetAssemblyTypeName: ARSceneLoader, Assembly-CSharp
+        m_MethodName: LoadARScene
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: LiteracyLevel
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &940216034
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2528,6 +2541,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 940216031}
   m_CullTransparentMesh: 1
+--- !u!114 &940216036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940216031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832278b8e963d80438d5d47f5e4f0131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ARSceneLoader
 --- !u!1 &1082192023
 GameObject:
   m_ObjectHideFlags: 0
@@ -4567,7 +4592,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Soal 1 dari 5
+  m_text: Scan Area Datar dan Tekan Areanya
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
   m_sharedMaterial: {fileID: 1359437714236718880, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
@@ -4717,9 +4742,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResultPanel
   resultGraphic: {fileID: 398875066}
+  statusLevelText: {fileID: 497317695}
   resultText: {fileID: 205776740}
   coinText: {fileID: 0}
   retryButton: {fileID: 2001500769}
+  completeStatusText: Kamu Berhasil
+  incompleteStatusText: Coba Lagi
 --- !u!224 &1814190053
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4765,7 +4793,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4ee48bfd2d894bb4790654976b9ccece, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 36c943b5e8584dc45b82fc0fff68102b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5107,7 +5135,10 @@ MonoBehaviour:
   mejaPrefab: {fileID: 7801318131163948799}
   ml1GameManager: {fileID: 0}
   ml2GameManager: {fileID: 0}
+  ml3GameManager: {fileID: 0}
   ll1GameManager: {fileID: 2143366662}
+  ll2GameManager: {fileID: 0}
+  ll3GameManager: {fileID: 0}
 --- !u!1 &2001500768
 GameObject:
   m_ObjectHideFlags: 0
@@ -5191,7 +5222,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 42ee6a6b72d975648a399c13ff9d6438, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cdb2d8981aefc9841bd81b38660c5439, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5341,6 +5372,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2143366663}
   - component: {fileID: 2143366662}
+  - component: {fileID: 2143366664}
   m_Layer: 0
   m_Name: LL1GameManager
   m_TagString: Untagged
@@ -5369,6 +5401,16 @@ MonoBehaviour:
   charWidth: 0.08
   wordCardDepth: 0.12
   itemGap: 0.015
+  audioSource: {fileID: 0}
+  instruksiSusunHurufClip: {fileID: 8300000, guid: ea2d8bd26f6565749a241968479cdef9, type: 3}
+  instruksiSusunKalimatClip: {fileID: 8300000, guid: d9815ce5bb0d50c478e5737bdedf02b8, type: 3}
+  jawabanBenarClip: {fileID: 8300000, guid: efa86330a9b282c48b3716c7088968c0, type: 3}
+  jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
+  levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
+  levelIncompleteClip: {fileID: 8300000, guid: 44093f4385473084ebf3379c9e015384, type: 3}
+  progressSubject: Literacy
+  progressLevelNumber: 1
+  minimumCorrectToPass: 8
 --- !u!4 &2143366663
 Transform:
   m_ObjectHideFlags: 0
@@ -5384,6 +5426,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &2143366664
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143366661}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2143973779
 GameObject:
   m_ObjectHideFlags: 0
