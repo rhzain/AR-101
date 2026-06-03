@@ -16,6 +16,7 @@ public class ML1GameManager : MonoBehaviour
     private GameObject currentMeja;
     public int applesOnLeft;
     public int applesOnRight;
+    public bool currentQuestionAsksLess;
     private bool questionActive = false;
     private ML1UIManager uiManager;
     
@@ -65,6 +66,7 @@ public class ML1GameManager : MonoBehaviour
 
         currentRound++;
         Debug.Log($"Soal ke-{currentRound} mulai");
+        currentQuestionAsksLess = currentRound % 2 == 0;
 
         // Random jumlah buah kanan dan kiri (berbeda)
         applesOnLeft = Random.Range(2, 9);
@@ -76,14 +78,14 @@ public class ML1GameManager : MonoBehaviour
             applesOnRight = Random.Range(3, 8);
         }
 
-        Debug.Log($"Round {currentRound}: Buah Kiri: {applesOnLeft}, Buah Kanan: {applesOnRight}");
+        Debug.Log($"Round {currentRound}: Buah Kiri: {applesOnLeft}, Buah Kanan: {applesOnRight}, Cari: {(currentQuestionAsksLess ? "lebih sedikit" : "lebih banyak")}");
 
         SpawnApplesOnBothSides(applesOnLeft, applesOnRight);
         questionActive = true;
         
         // Update UI dengan round info
         if (uiManager != null)
-            uiManager.UpdateRoundInfo(currentRound, MAX_ROUNDS);
+            uiManager.UpdateRoundInfo(currentRound, MAX_ROUNDS, currentQuestionAsksLess);
     }
 
     void SpawnApplesOnBothSides(int leftCount, int rightCount)
@@ -197,14 +199,14 @@ public class ML1GameManager : MonoBehaviour
     {
         if (!questionActive) return;
 
-        if (applesOnLeft > applesOnRight)
+        if (IsCorrectSide(applesOnLeft, applesOnRight))
         {
-            Debug.Log("BENAR! Sisi kiri lebih banyak");
+            Debug.Log($"BENAR! Sisi kiri {(currentQuestionAsksLess ? "lebih sedikit" : "lebih banyak")}");
             OnAnswerCorrect();
         }
         else
         {
-            Debug.Log("SALAH! Sisi kiri lebih sedikit");
+            Debug.Log($"SALAH! Sisi kiri bukan yang {(currentQuestionAsksLess ? "lebih sedikit" : "lebih banyak")}");
             OnAnswerWrong();
         }
     }
@@ -214,16 +216,23 @@ public class ML1GameManager : MonoBehaviour
     {
         if (!questionActive) return;
 
-        if (applesOnRight > applesOnLeft)
+        if (IsCorrectSide(applesOnRight, applesOnLeft))
         {
-            Debug.Log("BENAR! Sisi kanan lebih banyak");
+            Debug.Log($"BENAR! Sisi kanan {(currentQuestionAsksLess ? "lebih sedikit" : "lebih banyak")}");
             OnAnswerCorrect();
         }
         else
         {
-            Debug.Log("SALAH! Sisi kanan lebih sedikit");
+            Debug.Log($"SALAH! Sisi kanan bukan yang {(currentQuestionAsksLess ? "lebih sedikit" : "lebih banyak")}");
             OnAnswerWrong();
         }
+    }
+
+    private bool IsCorrectSide(int selectedCount, int otherCount)
+    {
+        return currentQuestionAsksLess
+            ? selectedCount < otherCount
+            : selectedCount > otherCount;
     }
 
     void OnAnswerCorrect()

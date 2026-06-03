@@ -25,20 +25,6 @@ public class ML2GameManager : MonoBehaviour
         new Question { display = "20 - 16 = ?", answer = 4  },
     };
 
-    // Soal untuk mode Isi Bagian Kosong (Part 2)
-    private Question[] fillBlankQuestions = new Question[]
-    {
-        new Question { display = "10 + ___ = 24", answer = 14 },
-        new Question { display = "12 + ___ = 30", answer = 18 },
-        new Question { display = "25 - ___ = 13", answer = 12 },
-        new Question { display = "23 - ___ = 11", answer = 12 },
-        new Question { display = "___ - 30 = 17", answer = 47 },
-    };
-
-    // ─── State ────────────────────────────────────────────────
-    private enum GameMode { MathArrange, MathFillBlank }
-    private GameMode currentMode;
-
     private Question[] activeQuestions;
     private int currentRound = 0;
     private const int MAX_ROUNDS = 5;
@@ -56,13 +42,9 @@ public class ML2GameManager : MonoBehaviour
     void Start()
     {
         uiManager = FindFirstObjectByType<ML2UIManager>();
+        activeQuestions = arrangeQuestions;
 
-        // Tentukan mode dari PlayerPrefs (diatur oleh MarkerHandler)
-        string mode = PlayerPrefs.GetString("MODE", "MATH_ARRANGE");
-        currentMode = (mode == "MATH_FILLBLANK") ? GameMode.MathFillBlank : GameMode.MathArrange;
-        activeQuestions = (currentMode == GameMode.MathFillBlank) ? fillBlankQuestions : arrangeQuestions;
-
-        Debug.Log($"[ML2GameManager] Start - Mode: {currentMode}");
+        Debug.Log("[ML2GameManager] Start - Mode: Susun Hasil");
     }
 
     void Update()

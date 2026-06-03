@@ -575,7 +575,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &288924311
 RectTransform:
   m_ObjectHideFlags: 0
@@ -773,6 +773,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 290434438}
   m_CullTransparentMesh: 1
+--- !u!1 &342176959 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 408208254204858328, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &342176961 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2263274905782478113, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 342176959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddee574bcff46d6439ae788f34c890bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LiteracyLevel2.LL2AnswerLayout
 --- !u!1 &367553983
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,6 +2029,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736266231}
   m_CullTransparentMesh: 1
+--- !u!4 &758688965 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8715254529519459309, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &765243911
 GameObject:
   m_ObjectHideFlags: 0
@@ -2424,6 +2445,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 865524949}
   m_CullTransparentMesh: 1
+--- !u!4 &906245395 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3726023523863687196, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &914583293
 GameObject:
   m_ObjectHideFlags: 0
@@ -2802,6 +2828,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 940216031}
   m_CullTransparentMesh: 1
+--- !u!1 &958832409 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4458904371653646518, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1021957393
 GameObject:
   m_ObjectHideFlags: 0
@@ -2819,7 +2850,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1021957394
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3087,7 +3118,7 @@ GameObject:
   - component: {fileID: 1092985605}
   - component: {fileID: 1092985606}
   m_Layer: 0
-  m_Name: LL2UIManager
+  m_Name: LL3UIManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3117,13 +3148,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1092985603}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc3a267bd5e2838479a2577abf0a0b57, type: 3}
+  m_Script: {fileID: 11500000, guid: b3d447ea6b27998489669a21b8da5bab, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LiteracyLevel2.LL2UIManager
-  sentenceText: {fileID: 288924313}
+  m_EditorClassIdentifier: Assembly-CSharp::LiteracyLevel3.LL3UIManager
+  storyText: {fileID: 0}
   roundText: {fileID: 1718214194}
-  feedbackText: {fileID: 592361572}
-  questionText: {fileID: 1021957396}
+  feedbackText: {fileID: 0}
+  questionText: {fileID: 592361572}
   instructionText: {fileID: 592361572}
   selectedObjectText: {fileID: 592361572}
   submitButton: {fileID: 917755897}
@@ -3132,13 +3163,7 @@ MonoBehaviour:
   canvasSoal: {fileID: 1384241349}
   canvasRecap: {fileID: 2062243684}
   resultPanel: {fileID: 1814190052}
-  resultSprites:
-  - {fileID: 21300000, guid: aa81d9279ccf9cb4fba121b0e634ad86, type: 3}
-  - {fileID: 21300000, guid: 12abecc06aa51fa4c933eebec310bc29, type: 3}
-  - {fileID: 21300000, guid: 0cb8bb9e55923844db211a1fd70c8018, type: 3}
-  - {fileID: 21300000, guid: f921ad75b1bdc3a45a130ef3e88ee0c5, type: 3}
-  - {fileID: 21300000, guid: 083a27ce8c6817d49ae12749614f1960, type: 3}
-  - {fileID: 21300000, guid: de1f8e3014fcb6e428c5624f6fba6540, type: 3}
+  resultSprites: []
   nextSceneName: LiteracyLevel
 --- !u!1 &1197704571
 GameObject:
@@ -3157,7 +3182,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1197704572
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3215,37 +3240,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1197704571}
   m_CullTransparentMesh: 1
---- !u!1 &1200919505
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1200919506}
-  m_Layer: 0
-  m_Name: SlotArea
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1200919506
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1200919505}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.071, y: 0.15, z: 0.331}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6751991688687386672}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1252927642
 GameObject:
   m_ObjectHideFlags: 0
@@ -4711,7 +4705,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Soal 1 dari 5
+  m_text: Scan Area Datar di Sekitar Kamu!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
   m_sharedMaterial: {fileID: 1359437714236718880, guid: 48b2ab0d055aee149a3df6e666c80dbc, type: 2}
@@ -4783,6 +4777,135 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1001 &1749702587
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2379859091998046821, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3012975942778753428, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5.842002
+      objectReference: {fileID: 0}
+    - target: {fileID: 3012975942778753428, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.469
+      objectReference: {fileID: 0}
+    - target: {fileID: 3012975942778753428, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.012
+      objectReference: {fileID: 0}
+    - target: {fileID: 3012975942778753428, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3012975942778753428, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.265
+      objectReference: {fileID: 0}
+    - target: {fileID: 3369068271988293264, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673323655869855383, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.31
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673323655869855383, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.055
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673323655869855383, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 3673323655869855383, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4458904371653646518, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_Name
+      value: PrefabLayout
+      objectReference: {fileID: 0}
+    - target: {fileID: 4458904371653646518, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5433808711609486255, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_fontSize
+      value: 2.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6759606922429946850, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.736
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7505281238559616239, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7581295049756174097, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 5.215
+      objectReference: {fileID: 0}
+    - target: {fileID: 7581295049756174097, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 7581295049756174097, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.265
+      objectReference: {fileID: 0}
+    - target: {fileID: 7581295049756174097, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.058
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
 --- !u!1 &1775177108
 GameObject:
   m_ObjectHideFlags: 0
@@ -4846,7 +4969,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1780614371
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5104,6 +5227,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1874798369 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2379859091998046821, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1908340948
 GameObject:
   m_ObjectHideFlags: 0
@@ -5323,13 +5451,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad0b326f4b5c08748b4e154155e05402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementManager
-  mejaPrefab: {fileID: 9128409251629840964, guid: 497c4f3c5acccca4497dbc9c85cc2bf3, type: 3}
+  mejaPrefab: {fileID: 958832409}
   ml1GameManager: {fileID: 0}
   ml2GameManager: {fileID: 0}
   ml3GameManager: {fileID: 0}
   ll1GameManager: {fileID: 0}
-  ll2GameManager: {fileID: 2143366664}
-  ll3GameManager: {fileID: 0}
+  ll2GameManager: {fileID: 0}
+  ll3GameManager: {fileID: 2143366664}
 --- !u!1 &2001500768
 GameObject:
   m_ObjectHideFlags: 0
@@ -5553,6 +5681,11 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!4 &2132039961 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1431136615650633696, guid: ab85ed69db0c58744af3d9a4ac97f9b4, type: 3}
+  m_PrefabInstance: {fileID: 1749702587}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2143366661
 GameObject:
   m_ObjectHideFlags: 0
@@ -5564,7 +5697,7 @@ GameObject:
   - component: {fileID: 2143366663}
   - component: {fileID: 2143366664}
   m_Layer: 0
-  m_Name: LL2GameManager
+  m_Name: LL3GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5594,380 +5727,138 @@ MonoBehaviour:
   m_GameObject: {fileID: 2143366661}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77bde6587356e9d4980acbce85c8e18d, type: 3}
+  m_Script: {fileID: 11500000, guid: e0dc26b9894ba454eb0e220312b480c8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LiteracyLevel2.LL2GameManager
-  boyPrefab: {fileID: 1100646791932485439, guid: ffb178d768d046e41bb0bfdcee8fb6f9, type: 3}
-  girlPrefab: {fileID: 7342564736345676712, guid: dc9c8b254ba72904e9e38b6362a6cf1d, type: 3}
-  mathPrefab: {fileID: 9217483068743780880, guid: e5c011acdcf0d2343a5cbb3b7c34e852, type: 3}
-  booksPrefab: {fileID: 1370776649397071666, guid: e0126bc669b80744c848cfa14593cef9, type: 3}
-  housePrefab: {fileID: 519775192223985291, guid: 0a55e9b7885b3c84aac1d1cbaaa1b6ee, type: 3}
-  shopPrefab: {fileID: 4867814483751172498, guid: 826697a9fd0e454458a55c0d6180e82c, type: 3}
-  ricePrefab: {fileID: 3790119168571532384, guid: a099f108d95b56d4080c91969d9e5bdc, type: 3}
-  donutPrefab: {fileID: 9158414805789576766, guid: aeb5f35648dc2bf478a243fd5ca8d961, type: 3}
-  ballPrefab: {fileID: 7938922055173876199, guid: 10cec439568004c4fb163c55b1a8f4f7, type: 3}
-  lollipopPrefab: {fileID: 2093768457146405038, guid: 9d2a4ff2b1df5ba4eb3bdea07e36d721, type: 3}
-  motherPrefab: {fileID: 5307310991882302870, guid: 5468d37731916cf45abdbd2b510bb075, type: 3}
-  fatherPrefab: {fileID: 7023500270848871988, guid: 86cfd6b471e69654aab2363635941d48, type: 3}
-  marketPrefab: {fileID: 631842377876167656, guid: 8855b721f72e3fe40afabd75268468ba, type: 3}
-  chickenPrefab: {fileID: 9077048847145179614, guid: 9247ee9a0047cfd4da62cca3b4b45cd4, type: 3}
-  cabbagePrefab: {fileID: 3244095086745854598, guid: fd230e3b2c46d3a4d86f688886dc67bf, type: 3}
-  fishPrefab: {fileID: 9203970967153088302, guid: 6636b32afcefefd47bd5dcbc37806cdf, type: 3}
-  answerLayout: {fileID: 7236269125183606973, guid: 497c4f3c5acccca4497dbc9c85cc2bf3, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::LiteracyLevel3.LL3GameManager
+  arrangeStoryLayout: {fileID: 958832409}
+  sentenceCardSpawnPoint: {fileID: 2132039961}
+  sentenceSlotSpawnPoint: {fileID: 758688965}
+  storyRuntimeParent: {fileID: 906245395}
+  sentenceCardPrefab: {fileID: 8928811960246387113, guid: 32f0f1c771456e6408549508ccfd314b, type: 3}
+  sentenceSlotPrefab: {fileID: 1874798369}
+  sentenceMinWidth: 1.25
+  sentenceMaxWidth: 2
+  sentenceCharWidth: 0.012
+  sentenceCardDepth: 0.11
+  sentenceRowSpacing: 0.14
+  sentenceSpawnPointAsFirstRow: 0
+  objectAnswerLayout: {fileID: 342176959}
+  answerLayout: {fileID: 342176961}
   runtimeParent: {fileID: 0}
   choiceAreaCenter: {fileID: 0}
   spawnHeightOffset: 0.03
   fallbackChoiceSpacing: 0.22
   fallbackRowSpacing: 0.18
   objectScale: {x: 1, y: 1, z: 1}
+  marketPrefab: {fileID: 631842377876167656, guid: 8855b721f72e3fe40afabd75268468ba, type: 3}
+  housePrefab: {fileID: 519775192223985291, guid: 0a55e9b7885b3c84aac1d1cbaaa1b6ee, type: 3}
+  shopPrefab: {fileID: 4867814483751172498, guid: 826697a9fd0e454458a55c0d6180e82c, type: 3}
+  clothPrefab: {fileID: 5717450412596077354, guid: c010e179dea9b544f9b26c9769dc859f, type: 3}
+  clothesPrefab: {fileID: 4186550919820576958, guid: 5d29b6000bf694e4988d220f5a84b726, type: 3}
+  booksPrefab: {fileID: 1370776649397071666, guid: e0126bc669b80744c848cfa14593cef9, type: 3}
+  ballPrefab: {fileID: 7938922055173876199, guid: 10cec439568004c4fb163c55b1a8f4f7, type: 3}
+  lollipopPrefab: {fileID: 2093768457146405038, guid: 9d2a4ff2b1df5ba4eb3bdea07e36d721, type: 3}
+  donutPrefab: {fileID: 9158414805789576766, guid: aeb5f35648dc2bf478a243fd5ca8d961, type: 3}
+  ricePrefab: {fileID: 3790119168571532384, guid: a099f108d95b56d4080c91969d9e5bdc, type: 3}
+  chickenPrefab: {fileID: 9077048847145179614, guid: 9247ee9a0047cfd4da62cca3b4b45cd4, type: 3}
+  redMaterial: {fileID: 2100000, guid: c4874da63ebcb3441b624dfafecc3348, type: 2}
+  blueMaterial: {fileID: 2100000, guid: 223499a6fe0d71a4281561e09487e7d4, type: 2}
+  yellowMaterial: {fileID: 2100000, guid: c7f48bae2b51a3b4599fc1304dc61608, type: 2}
+  redColor: {r: 0.9, g: 0.12, b: 0.12, a: 1}
+  blueColor: {r: 0.12, g: 0.32, b: 0.9, a: 1}
+  yellowColor: {r: 1, g: 0.86, b: 0.18, a: 1}
   selectedMaterial: {fileID: 0}
-  selectedColor: {r: 0.6062748, g: 1, b: 0.25098038, a: 0.5058824}
+  selectedColor: {r: 0.58927, g: 1, b: 0.25098038, a: 0.5294118}
   selectedScaleMultiplier: 1.05
   audioSource: {fileID: 0}
-  buildQuestionsFromCode: 1
-  questions:
-  - sentenceText: Faris pergi ke kamar lalu belajar Matematika.
-    connectorWord: lalu
+  buildStoriesFromCode: 1
+  stories:
+  - storyText: 'Ibu pergi ke pasar kain.
+
+      Ibu melihat kain merah dan kain biru.
+
+      Ibu
+      membeli kain merah.
+
+      Kain itu akan dibuat menjadi baju.'
     audioClip: {fileID: 0}
-    steps:
-    - questionText: Siapa yang pergi ke kamar?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 2
-      correctObjectIds: boy
-      distractorObjectIds: girl
-    - questionText: Apa yang Faris pelajari?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 2
-      correctObjectIds: math
-      distractorObjectIds: books
-  - sentenceText: Haris pulang ke rumah untuk makan nasi.
-    connectorWord: untuk
-    audioClip: {fileID: 0}
-    steps:
-    - questionText: Ke mana Haris pulang?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 3
-      correctObjectIds: house
-      distractorObjectIds: shop
-    - questionText: Apa yang Haris makan?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 1
-      correctObjectIds: rice
-      distractorObjectIds: donut
-  - sentenceText: Evan tidur di rumah dan bermain bola di siang hari.
-    connectorWord: dan
-    audioClip: {fileID: 0}
-    steps:
-    - questionText: Di mana Evan tidur?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 3
-      correctObjectIds: house
-      distractorObjectIds: shop
-    - questionText: Apa yang Evan mainkan?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 1
-      correctObjectIds: ball
-      distractorObjectIds: lollipop
-  - sentenceText: Lina menemani ibu untuk belanja di pasar.
-    connectorWord: untuk
-    audioClip: {fileID: 0}
-    steps:
-    - questionText: Siapa yang Lina temani?
-      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
-      interaction: 0
-      slotType: 2
-      correctObjectIds: mother
-      distractorObjectIds: father
-    - questionText: Ke mana Lina pergi?
+    orderedSentences:
+    - Ibu pergi ke pasar kain.
+    - Ibu melihat kain merah dan kain biru.
+    - Ibu membeli kain merah.
+    - Kain itu akan dibuat menjadi baju.
+    literalSteps:
+    - questionText: Ibu pergi ke mana?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
       interaction: 0
       slotType: 3
       correctObjectIds: market
-      distractorObjectIds: house
-  - sentenceText: Ibu pergi ke pasar membeli ayam, kubis, dan ikan.
-    connectorWord: dan
-    audioClip: {fileID: 0}
-    steps:
-    - questionText: Siapa yang pergi ke pasar?
+      distractorObjectIds: house,shop
+    - questionText: Ibu melihat kain warna apa saja?
+      hintText: Pilih semua jawaban yang benar, lalu tekan Cek Jawaban.
+      interaction: 1
+      slotType: 2
+      correctObjectIds: cloth_red,cloth_blue
+      distractorObjectIds: cloth_yellow
+    - questionText: Ibu membeli kain warna apa?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
       interaction: 0
       slotType: 2
-      correctObjectIds: mother
-      distractorObjectIds: father
-    - questionText: Apa saja yang Ibu beli?
-      hintText: Pilih semua jawaban yang benar, lalu tekan Cek Jawaban.
-      interaction: 1
+      correctObjectIds: cloth_red
+      distractorObjectIds: cloth_blue
+    - questionText: Kain itu akan dibuat menjadi apa?
+      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      interaction: 0
+      slotType: 2
+      correctObjectIds: clothes_red
+      distractorObjectIds: books,ball
+  - storyText: 'Budi berada di rumah.
+
+      Ia melihat buku di meja.
+
+      Budi
+      mengambil buku itu lalu membaca.
+
+      Sambil membaca, Budi makan donat.'
+    audioClip: {fileID: 0}
+    orderedSentences:
+    - Budi berada di rumah.
+    - Ia melihat buku di meja.
+    - Budi mengambil buku itu lalu membaca.
+    - Sambil membaca, Budi makan donat.
+    literalSteps:
+    - questionText: Budi berada di mana?
+      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      interaction: 0
+      slotType: 3
+      correctObjectIds: house
+      distractorObjectIds: shop,market
+    - questionText: Budi melihat apa di meja?
+      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      interaction: 0
+      slotType: 2
+      correctObjectIds: books
+      distractorObjectIds: ball,lollipop
+    - questionText: Apa yang Budi ambil?
+      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      interaction: 0
+      slotType: 2
+      correctObjectIds: books
+      distractorObjectIds: ball,donut
+    - questionText: Sambil membaca, Budi makan apa?
+      hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      interaction: 0
       slotType: 1
-      correctObjectIds: chicken,cabbage,fish
-      distractorObjectIds: donut,lollipop
-  sentenceReadDelay: 1.25
-  connectorHighlightDuration: 1.25
+      correctObjectIds: donut
+      distractorObjectIds: rice,lollipop
+  waitForStoryAudioBeforeCards: 0
+  storyIntroDelay: 0.75
+  nextStageDelay: 1.25
   nextStepDelay: 1.25
-  nextQuestionDelay: 1.5
-  connectorHighlightColor: '#FFD84D'
+  nextStoryDelay: 1.5
   progressSubject: Literacy
-  progressLevelNumber: 2
+  progressLevelNumber: 3
   minimumCorrectToPass: 4
---- !u!1 &2143973779
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2143973780}
-  m_Layer: 0
-  m_Name: SourceArea
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2143973780
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2143973779}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.08, y: 0.1, z: -0.112}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6751991688687386672}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &529042322562630645
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4412134349190815456}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.44, y: 0.1, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6751991688687386672}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1467843371906448217
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3302774646538833244}
-  - component: {fileID: 6809490248978620133}
-  - component: {fileID: 7832494469239552461}
-  - component: {fileID: 2837608039048866445}
-  - component: {fileID: 7920386287969633730}
-  m_Layer: 0
-  m_Name: Cube
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!65 &2837608039048866445
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467843371906448217}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.02, y: 0.033579312, z: 0.009316518}
-  m_Center: {x: 0, y: -1.1369518e-16, z: -0.0040002926}
---- !u!4 &3302774646538833244
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467843371906448217}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 35.50628, z: 100}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6751991688687386672}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &4412134349190815456
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 529042322562630645}
-  m_Layer: 0
-  m_Name: SpawnArea
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6751991688687386672
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7801318131163948799}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 3302774646538833244}
-  - {fileID: 529042322562630645}
-  - {fileID: 2143973780}
-  - {fileID: 1200919506}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6809490248978620133
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467843371906448217}
-  m_Mesh: {fileID: -5495902117074765545, guid: 3559d40c18862b44f8b6561bc76e6490, type: 3}
---- !u!114 &7714927371400819440
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7801318131163948799}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebef932d4367c6642bd63941fa89633f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MejaSetup
-  leftIndicator: {fileID: 0}
-  rightIndicator: {fileID: 0}
---- !u!1 &7801318131163948799
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6751991688687386672}
-  - component: {fileID: 7714927371400819440}
-  m_Layer: 0
-  m_Name: Meja
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!23 &7832494469239552461
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467843371906448217}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: -4122305037028815033, guid: 3559d40c18862b44f8b6561bc76e6490, type: 3}
-  - {fileID: -13248275891365874, guid: 3559d40c18862b44f8b6561bc76e6490, type: 3}
-  - {fileID: 4522049463708546591, guid: 3559d40c18862b44f8b6561bc76e6490, type: 3}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &7920386287969633730
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1467843371906448217}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -5978,9 +5869,9 @@ SceneRoots:
   - {fileID: 516726639}
   - {fileID: 1775177110}
   - {fileID: 149578044}
-  - {fileID: 6751991688687386672}
   - {fileID: 1867390729}
   - {fileID: 1384241350}
   - {fileID: 2062243685}
   - {fileID: 2143366663}
   - {fileID: 1092985605}
+  - {fileID: 1749702587}

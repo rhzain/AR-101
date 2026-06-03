@@ -17,6 +17,12 @@ public class DraggableCard : MonoBehaviour
     [Tooltip("Jarak maksimum agar kartu bisa snap ke slot terdekat")]
     public float snapRadius = 0.12f;
 
+    [Header("Text Layout")]
+    [SerializeField] private float textPaddingX = 0.04f;
+    [SerializeField] private float textPaddingZ = 0.02f;
+    [SerializeField] private float textFontSizeMin = 0.01f;
+    [SerializeField] private float textFontSizeMax = 2f;
+
     /// <summary>Lebar kartu dalam meter (diset oleh LiteracyGameManager).</summary>
     public float CardWidth { get; private set; }
 
@@ -28,6 +34,7 @@ public class DraggableCard : MonoBehaviour
         snapRadius = Mathf.Max(width, depth) * 1.2f;
         float y    = transform.localScale.y;
         transform.localScale = new Vector3(width, y, depth);
+        ApplyTextLayout(width, depth);
     }
 
     // ─── State ────────────────────────────────────────────────
@@ -35,6 +42,7 @@ public class DraggableCard : MonoBehaviour
     private Rigidbody rb;
     private CardSlot currentSlot;
     private TextMeshPro cardText;
+    private RectTransform cardTextRect;
     private bool isDragging;
     private Plane dragPlane;
 
@@ -55,6 +63,8 @@ public class DraggableCard : MonoBehaviour
         rb.useGravity  = false;
 
         cardText = GetComponentInChildren<TextMeshPro>();
+        if (cardText != null)
+            cardTextRect = cardText.rectTransform;
     }
 
     /// <summary>Inisialisasi isi kartu dan posisi awal di source area.</summary>
@@ -66,12 +76,34 @@ public class DraggableCard : MonoBehaviour
         if (cardText != null)
         {
             cardText.text = content;
-            cardText.enableAutoSizing = true;
-            cardText.fontSizeMin = 1f;
-            cardText.fontSizeMax = 36f;
+            ApplyTextLayout(transform.localScale.x, transform.localScale.z);
         }
 
         transform.position = spawnPos;
+    }
+
+    private void ApplyTextLayout(float width, float depth)
+    {
+        if (cardText == null) return;
+        if (cardTextRect == null) cardTextRect = cardText.rectTransform;
+
+        float scaleX = Mathf.Max(Mathf.Abs(transform.localScale.x), 0.0001f);
+        float scaleZ = Mathf.Max(Mathf.Abs(transform.localScale.z), 0.0001f);
+
+        // TMP adalah child dari kartu, jadi lawan skala parent agar glyph tidak stretch.
+        cardText.transform.localScale = new Vector3(1f / scaleX, 1f / scaleZ, 1f);
+
+        float textWidth  = Mathf.Max(0.01f, width - textPaddingX * 2f);
+        float textHeight = Mathf.Max(0.01f, depth - textPaddingZ * 2f);
+
+        cardTextRect.sizeDelta = new Vector2(textWidth, textHeight);
+        cardText.enableAutoSizing = true;
+        cardText.fontSizeMin = textFontSizeMin;
+        cardText.fontSizeMax = textFontSizeMax;
+        cardText.enableWordWrapping = false;
+        cardText.overflowMode = TextOverflowModes.Ellipsis;
+        cardText.alignment = TextAlignmentOptions.Center;
+        cardText.ForceMeshUpdate();
     }
 
     // ─── Update ───────────────────────────────────────────────

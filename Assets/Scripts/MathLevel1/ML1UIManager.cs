@@ -74,15 +74,17 @@ public class ML1UIManager : MonoBehaviour
 
     // ─── Dipanggil oleh ML1GameManager ───────────────────────
 
-    public void UpdateRoundInfo(int currentRound, int maxRounds)
+    public void UpdateRoundInfo(int currentRound, int maxRounds, bool asksLess)
     {
         if (roundText != null)
-            roundText.text = $"Soal {currentRound} dari 5";
+            roundText.text = $"Soal {currentRound} dari {maxRounds}";
 
         // Pastikan canvas soal aktif dan reset elemen
         ShowGameplayCanvas();
 
-        if (questionText != null) questionText.text = "Pilih sisi yang lebih banyak!";
+        if (questionText != null)
+            questionText.text = asksLess ? "Pilih sisi yang lebih sedikit!" : "Pilih sisi yang lebih banyak!";
+
         if (countApples != null)  countApples.gameObject.SetActive(false);
         if (resultPanel != null)  resultPanel.Hide();
     }
@@ -93,11 +95,26 @@ public class ML1UIManager : MonoBehaviour
         {
             countApples.text = answer;
             countApples.gameObject.SetActive(true);
-            if (gameManager.applesOnLeft > gameManager.applesOnRight)
-                countApples.text += $" Kiri ({gameManager.applesOnLeft}) lebih dari Kanan ({gameManager.applesOnRight})";
-            else
-                countApples.text += $" Kanan ({gameManager.applesOnRight}) lebih dari Kiri ({gameManager.applesOnLeft})";
+            countApples.text += " " + GetComparisonText();
         }
+    }
+
+    private string GetComparisonText()
+    {
+        if (gameManager == null)
+            return "";
+
+        bool leftMatchesPrompt = gameManager.currentQuestionAsksLess
+            ? gameManager.applesOnLeft < gameManager.applesOnRight
+            : gameManager.applesOnLeft > gameManager.applesOnRight;
+
+        string selectedSide = leftMatchesPrompt ? "Kiri" : "Kanan";
+        string otherSide = leftMatchesPrompt ? "Kanan" : "Kiri";
+        int selectedCount = leftMatchesPrompt ? gameManager.applesOnLeft : gameManager.applesOnRight;
+        int otherCount = leftMatchesPrompt ? gameManager.applesOnRight : gameManager.applesOnLeft;
+        string comparison = gameManager.currentQuestionAsksLess ? "lebih sedikit dari" : "lebih banyak dari";
+
+        return $"{selectedSide} ({selectedCount}) {comparison} {otherSide} ({otherCount})";
     }
 
     public void OnAnswerCorrect()

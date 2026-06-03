@@ -23,6 +23,9 @@ public class PlacementManager : MonoBehaviour
     // Literacy L2 - sambungkan LL2GameManager di Inspector (biarkan kosong jika bukan LiteracyL2)
     public LiteracyLevel2.LL2GameManager ll2GameManager;
 
+    // Literacy L3 - sambungkan LL3GameManager di Inspector (biarkan kosong jika bukan LiteracyL3)
+    public LiteracyLevel3.LL3GameManager ll3GameManager;
+
     private ARRaycastManager raycastManager;
     private ARPlaneManager planeManager;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
@@ -49,8 +52,10 @@ public class PlacementManager : MonoBehaviour
             // biar meja tidak miring
             pose.rotation = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0);
 
-            GameObject meja = Instantiate(mejaPrefab, pose.position, pose.rotation);
-            meja.SetActive(true);
+            GameObject meja = SpawnOrReusePlacementObject(pose);
+            if (meja == null)
+                return;
+
             Debug.Log("Meja di-spawn");
 
             isPlaced = true;
@@ -154,6 +159,13 @@ public class PlacementManager : MonoBehaviour
 
                 ll2GameManager.StartGame();
             }
+            // Literacy Level 3: LiteracyL3Root + dua layout tahap mengikuti titik tap plane
+            else if (ll3GameManager != null)
+            {
+                Debug.Log("[PlacementManager] Masuk cabang Literacy Level 3. Menyambungkan LiteracyL3Root ke LL3GameManager.");
+                ll3GameManager.ConfigureSpawnedLayout(meja);
+                ll3GameManager.StartGame();
+            }
         }
     }
 
@@ -169,6 +181,23 @@ public class PlacementManager : MonoBehaviour
         childObject.transform.localRotation = Quaternion.identity;
         childObject.transform.localScale = Vector3.one;
         return childObject.transform;
+    }
+
+    private GameObject SpawnOrReusePlacementObject(Pose pose)
+    {
+        if (mejaPrefab == null)
+        {
+            Debug.LogError("[PlacementManager] mejaPrefab belum di-assign.");
+            return null;
+        }
+
+        bool isSceneObject = mejaPrefab.scene.IsValid() && mejaPrefab.scene.isLoaded;
+        GameObject placedObject = isSceneObject ? mejaPrefab : Instantiate(mejaPrefab);
+
+        placedObject.transform.SetPositionAndRotation(pose.position, pose.rotation);
+        placedObject.SetActive(true);
+
+        return placedObject;
     }
 
     /// <summary>

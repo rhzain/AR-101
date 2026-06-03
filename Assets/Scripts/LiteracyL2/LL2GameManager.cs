@@ -769,7 +769,6 @@ namespace LiteracyLevel2
                 || objectId == "girl"
                 || objectId == "math"
                 || objectId == "books"
-                || objectId == "ball"
                 || objectId == "mother"
                 || objectId == "father";
         }
