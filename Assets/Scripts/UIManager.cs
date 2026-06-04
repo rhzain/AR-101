@@ -84,6 +84,7 @@ public class UIManager : MonoBehaviour
     public void OpenPiala()
     {
         pialaPopup.SetActive(true);
+        pialaPopup.SendMessage("RefreshReport", SendMessageOptions.DontRequireReceiver);
     }
 
     public void ClosePiala()
