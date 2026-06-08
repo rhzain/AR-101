@@ -1830,7 +1830,6 @@ MonoBehaviour:
   jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
   levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
   levelIncompleteClip: {fileID: 8300000, guid: 44093f4385473084ebf3379c9e015384, type: 3}
-  hintInstructionAudios: []
   buildQuestionsFromCode: 1
   questions:
   - storyText: Budi memiliki 5 apel. Ibu memberi Budi 3 apel lagi.
@@ -1861,6 +1860,7 @@ MonoBehaviour:
     steps:
     - questionText: Berapa apel yang dimiliki Budi sekarang?
       hintText: Pindahkan 3 apel dari meja Ibu ke meja Budi.
+      instructionAudioClip: {fileID: 8300000, guid: 282b0d5ad2619214990df2447177a775, type: 3}
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
@@ -1872,6 +1872,7 @@ MonoBehaviour:
       answer: 8
     - questionText: Apakah jumlah apel Budi lebih dari 7?
       hintText: Hitung apel Budi lalu bandingkan dengan angka 7.
+      instructionAudioClip: {fileID: 8300000, guid: 67c50031c8b8c2b4a83ef99e9b8c4aa3, type: 3}
       interaction: 3
       targetSlot: 1
       correctSelectedSlot: 0
@@ -1909,6 +1910,7 @@ MonoBehaviour:
     steps:
     - questionText: Berapa buku yang tersisa di meja?
       hintText: Berikan 2 buku kepada Siti.
+      instructionAudioClip: {fileID: 8300000, guid: 80a26728ecd8bd940b2dc1c48671aa4b, type: 3}
       interaction: 0
       targetSlot: 2
       correctSelectedSlot: 0
@@ -1920,6 +1922,7 @@ MonoBehaviour:
       answer: 7
     - questionText: Apakah jumlah buku yang tersisa kurang dari 8?
       hintText: Bandingkan jumlah buku yang tersisa dengan angka 8.
+      instructionAudioClip: {fileID: 8300000, guid: f01c97b0f9e97e2488d9cbff6ca32e0c, type: 3}
       interaction: 3
       targetSlot: 2
       correctSelectedSlot: 0
@@ -1957,6 +1960,7 @@ MonoBehaviour:
     steps:
     - questionText: Mana yang lebih banyak, ikan Ibu atau ikan Ayah?
       hintText: Ketuk meja yang ikannya lebih banyak.
+      instructionAudioClip: {fileID: 8300000, guid: 5faac938c77e7334fa8e4a5b9d105751, type: 3}
       interaction: 1
       targetSlot: 1
       correctSelectedSlot: 1
@@ -1968,6 +1972,7 @@ MonoBehaviour:
       answer: ibu|ikan ibu
     - questionText: Berapa ikan yang dimiliki Ibu sekarang?
       hintText: Pindahkan 4 ikan dari meja Ayah ke meja Ibu.
+      instructionAudioClip: {fileID: 8300000, guid: d45e6cb4fdd69514cad49045571343ef, type: 3}
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
@@ -2005,6 +2010,7 @@ MonoBehaviour:
     steps:
     - questionText: Siapa yang memiliki apel lebih banyak?
       hintText: Ketuk meja yang apelnya lebih banyak.
+      instructionAudioClip: {fileID: 8300000, guid: af6f6daef74371e4592ec6bda47459e3, type: 3}
       interaction: 1
       targetSlot: 1
       correctSelectedSlot: 1
@@ -2016,6 +2022,7 @@ MonoBehaviour:
       answer: budi
     - questionText: Berapa selisih jumlah apel mereka?
       hintText: Buang satu persatu apel dari kedua meja untuk mendapat selisih
+      instructionAudioClip: {fileID: 8300000, guid: cb8de52bcc66fd34c869fe9ff38e5474, type: 3}
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
@@ -2053,6 +2060,7 @@ MonoBehaviour:
     steps:
     - questionText: Berapa jumlah wortel di meja sekarang?
       hintText: Pindahkan 2 wortel dari meja Ibu ke meja utama.
+      instructionAudioClip: {fileID: 8300000, guid: 39623218c8084e24c9bf8b8396f21bad, type: 3}
       interaction: 0
       targetSlot: 1
       correctSelectedSlot: 0
@@ -2064,6 +2072,7 @@ MonoBehaviour:
       answer: 10
     - questionText: Apakah jumlah wortel di meja lebih dari 9?
       hintText: Bandingkan jumlah wortel di meja dengan angka 9.
+      instructionAudioClip: {fileID: 8300000, guid: 91e4ef9a5952dbf4e89121bf25451f63, type: 3}
       interaction: 3
       targetSlot: 1
       correctSelectedSlot: 0

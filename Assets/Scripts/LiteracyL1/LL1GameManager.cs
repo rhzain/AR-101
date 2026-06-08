@@ -36,10 +36,12 @@ public class LL1GameManager : MonoBehaviour
 
     [Header("Audio")]
     public AudioSource audioSource;
-    [Tooltip("Audio instruksi untuk bagian susun huruf menjadi kata.")]
+    [Tooltip("Audio instruksi awal bagian susun huruf menjadi kata. Diputar sebelum soal pertama Bagian 1.")]
     public AudioClip instruksiSusunHurufClip;
-    [Tooltip("Audio instruksi untuk bagian susun kata menjadi kalimat.")]
+    [Tooltip("Audio instruksi awal bagian susun kata menjadi kalimat. Diputar sebelum soal pertama Bagian 2.")]
     public AudioClip instruksiSusunKalimatClip;
+    [Tooltip("Jeda setelah audio instruksi opening selesai sebelum audio soal pertama tiap bagian diputar.")]
+    public float openingToFirstQuestionAudioDelay = 0.5f;
     [Tooltip("Audio yang diputar saat jawaban benar.")]
     public AudioClip jawabanBenarClip;
     [Tooltip("Audio yang diputar saat jawaban salah.")]
@@ -50,14 +52,18 @@ public class LL1GameManager : MonoBehaviour
     public AudioClip levelIncompleteClip;
 
     // ─── Data Soal ────────────────────────────────────────────
-    private struct Question
+    [System.Serializable]
+    public class Question
     {
+        [Tooltip("Audio untuk soal ini. Total 5 slot di Bagian 1 dan 5 slot di Bagian 2.")]
+        public AudioClip questionAudioClip;
         public string answer;   // Jawaban yang benar (huruf/kata dipisah spasi atau per karakter)
         public bool isWord;     // true = soal huruf→kata, false = soal kata→kalimat
     }
 
     // Bagian 1: Susun Huruf → Kata
-    private Question[] spellQuestions = new Question[]
+    [Header("Soal Bagian 1")]
+    public Question[] spellQuestions = new Question[]
     {
         new Question { answer = "APEL",    isWord = true },
         new Question { answer = "BOLA",    isWord = true },
@@ -67,7 +73,8 @@ public class LL1GameManager : MonoBehaviour
     };
 
     // Bagian 2: Susun Kata → Kalimat
-    private Question[] sentenceQuestions = new Question[]
+    [Header("Soal Bagian 2")]
+    public Question[] sentenceQuestions = new Question[]
     {
         new Question { answer = "BUDI PERGI KE PASAR",   isWord = false },
         new Question { answer = "AGUS BERMAIN BOLA",     isWord = false },
@@ -84,6 +91,7 @@ public class LL1GameManager : MonoBehaviour
     private const int ROUNDS_PER_PHASE = 5;
     private int correctAnswers = 0;
     private bool questionActive = false;
+    private int audioPlaybackToken = 0;
 
     [Header("Progress")]
     public string progressSubject = "Literacy";
@@ -122,6 +130,7 @@ public class LL1GameManager : MonoBehaviour
         currentRound   = 0;
         correctAnswers = 0;
         questionActive = false;
+        audioPlaybackToken++;
         StartNextQuestion();
     }
 
@@ -159,9 +168,7 @@ public class LL1GameManager : MonoBehaviour
         if (uiManager != null)
             uiManager.ShowQuestion(questionStr, roundInfo);
 
-        if (currentRound == 1)
-            PlayInstructionAudio(q.isWord);
-
+        PlayRoundAudio(q);
         SpawnCards(tokens);
         SpawnSlots(tokens.Length);
 
@@ -179,6 +186,7 @@ public class LL1GameManager : MonoBehaviour
     public void SubmitAnswer()
     {
         if (!questionActive) return;
+        audioPlaybackToken++;
 
         CardSlot[] slots = FindObjectsByType<CardSlot>(FindObjectsSortMode.None);
         System.Array.Sort(slots, (a, b) => a.slotIndex.CompareTo(b.slotIndex));
@@ -237,9 +245,35 @@ public class LL1GameManager : MonoBehaviour
         StartGame();
     }
 
-    void PlayInstructionAudio(bool isWordQuestion)
+    void PlayRoundAudio(Question question)
     {
-        PlayAudio(isWordQuestion ? instruksiSusunHurufClip : instruksiSusunKalimatClip, true);
+        if (question == null)
+            return;
+
+        int token = ++audioPlaybackToken;
+        AudioClip introClip = currentRound == 1 ? GetPhaseInstructionClip(question.isWord) : null;
+        if (introClip != null)
+        {
+            PlayAudio(introClip, true);
+            if (question.questionAudioClip != null)
+                StartCoroutine(PlayQuestionAudioAfterDelay(question.questionAudioClip, introClip.length + openingToFirstQuestionAudioDelay, token));
+            return;
+        }
+
+        PlayAudio(question.questionAudioClip, true);
+    }
+
+    AudioClip GetPhaseInstructionClip(bool isWordQuestion)
+    {
+        return isWordQuestion ? instruksiSusunHurufClip : instruksiSusunKalimatClip;
+    }
+
+    IEnumerator PlayQuestionAudioAfterDelay(AudioClip clip, float delay, int token)
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (questionActive && token == audioPlaybackToken)
+            PlayAudio(clip, true);
     }
 
     void PlayAudio(AudioClip clip, bool stopCurrentAudio = false)

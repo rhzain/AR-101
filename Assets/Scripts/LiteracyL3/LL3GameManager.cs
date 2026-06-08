@@ -26,6 +26,10 @@ namespace LiteracyLevel3
             [TextArea(2, 4)]
             public string hintText;
 
+            [Header("Audio")]
+            [Tooltip("Audio untuk pertanyaan object ini. Diputar saat pertanyaan dimulai.")]
+            public AudioClip questionAudioClip;
+
             public LL3InteractionType interaction = LL3InteractionType.SelectOne;
             public LL2AnswerSlotType slotType = LL2AnswerSlotType.Auto;
 
@@ -41,8 +45,6 @@ namespace LiteracyLevel3
         {
             [TextArea(3, 8)]
             public string storyText;
-
-            public AudioClip audioClip;
 
             [Tooltip("Kalimat cerita dengan urutan benar. Kartu akan diacak saat spawn.")]
             [TextArea(1, 3)]
@@ -108,6 +110,10 @@ namespace LiteracyLevel3
 
         [Header("Audio")]
         public AudioSource audioSource;
+        [Tooltip("Audio saat tahap susun kalimat/cerita dimulai.")]
+        public AudioClip arrangeStoryInstructionClip;
+        [Tooltip("Audio saat tahap pilih object dimulai.")]
+        public AudioClip objectQuestionInstructionClip;
         [Tooltip("Audio yang diputar saat susun cerita atau jawaban pertanyaan benar.")]
         public AudioClip jawabanBenarClip;
         [Tooltip("Audio yang diputar saat susun cerita atau jawaban pertanyaan salah.")]
@@ -147,6 +153,7 @@ namespace LiteracyLevel3
         private bool storyOrderActive;
         private bool objectStepActive;
         private bool lastStorySlotsFilled;
+        private int audioPlaybackToken;
         private Coroutine flowCoroutine;
 
         private int MaxStories => stories == null ? 0 : stories.Length;
@@ -200,6 +207,8 @@ namespace LiteracyLevel3
         [ContextMenu("Isi Template Literasi Level 3")]
         public void FillDefaultStoryTemplates()
         {
+            AudioClip[][] existingQuestionAudioClips = GetExistingQuestionAudioClips();
+
             stories = new[]
             {
                 new StoryRound
@@ -303,6 +312,8 @@ namespace LiteracyLevel3
                     }
                 }
             };
+
+            RestoreQuestionAudioClips(existingQuestionAudioClips);
         }
 
         public void ConfigureSpawnedLayout(GameObject spawnedRoot)
@@ -387,6 +398,7 @@ namespace LiteracyLevel3
             storyOrderActive = false;
             objectStepActive = false;
             lastStorySlotsFilled = false;
+            audioPlaybackToken++;
 
             if (uiManager != null)
                 uiManager.ResetUI();
@@ -407,7 +419,13 @@ namespace LiteracyLevel3
             if (MaxStories == 0 || currentStoryIndex >= MaxStories)
                 return;
 
-            PlayAudio(CurrentStory.audioClip);
+            if (objectStepActive)
+            {
+                PlayAudio(CurrentStep.questionAudioClip != null ? CurrentStep.questionAudioClip : objectQuestionInstructionClip);
+                return;
+            }
+
+            PlayAudio(arrangeStoryInstructionClip);
         }
 
         public void SubmitCurrentStage()
@@ -454,9 +472,9 @@ namespace LiteracyLevel3
             if (uiManager != null)
                 uiManager.ShowStoryOrder(story, currentStoryIndex + 1, MaxStories, false);
 
-            PlayAudio(story.audioClip);
+            PlayAudio(arrangeStoryInstructionClip);
 
-            float audioWait = story.audioClip != null ? story.audioClip.length : 0f;
+            float audioWait = arrangeStoryInstructionClip != null ? arrangeStoryInstructionClip.length : 0f;
             float waitDuration = waitForStoryAudioBeforeCards ? Mathf.Max(storyIntroDelay, audioWait) : storyIntroDelay;
             if (waitDuration > 0f)
                 yield return new WaitForSeconds(waitDuration);
@@ -567,12 +585,16 @@ namespace LiteracyLevel3
                 );
                 uiManager.SetCheckButtonInteractable(false);
             }
+
+            PlayCurrentLiteralStepAudio();
         }
 
         private void SubmitAnswer()
         {
             if (!objectStepActive || MaxStories == 0)
                 return;
+
+            audioPlaybackToken++;
 
             if (selectedAnswers.Count == 0)
             {
@@ -607,6 +629,31 @@ namespace LiteracyLevel3
             }
 
             StartCoroutine(AdvanceAfterLiteralDelay());
+        }
+
+        private void PlayCurrentLiteralStepAudio()
+        {
+            int token = ++audioPlaybackToken;
+            AudioClip questionClip = CurrentStep.questionAudioClip;
+
+            if (currentStepIndex == 0 && objectQuestionInstructionClip != null)
+            {
+                PlayAudio(objectQuestionInstructionClip);
+                if (questionClip != null)
+                    StartCoroutine(PlayAudioAfterDelay(questionClip, objectQuestionInstructionClip.length + 0.2f, token));
+
+                return;
+            }
+
+            PlayAudio(questionClip);
+        }
+
+        private IEnumerator PlayAudioAfterDelay(AudioClip clip, float delay, int token)
+        {
+            yield return new WaitForSeconds(delay);
+
+            if (objectStepActive && token == audioPlaybackToken)
+                PlayAudio(clip);
         }
 
         private IEnumerator AdvanceAfterLiteralDelay()
@@ -1153,6 +1200,48 @@ namespace LiteracyLevel3
 
             audioSource.Stop();
             audioSource.PlayOneShot(clip);
+        }
+
+        private AudioClip[][] GetExistingQuestionAudioClips()
+        {
+            if (stories == null)
+                return null;
+
+            AudioClip[][] clips = new AudioClip[stories.Length][];
+            for (int storyIndex = 0; storyIndex < stories.Length; storyIndex++)
+            {
+                LiteralStep[] steps = stories[storyIndex]?.literalSteps;
+                if (steps == null)
+                    continue;
+
+                clips[storyIndex] = new AudioClip[steps.Length];
+                for (int stepIndex = 0; stepIndex < steps.Length; stepIndex++)
+                    clips[storyIndex][stepIndex] = steps[stepIndex]?.questionAudioClip;
+            }
+
+            return clips;
+        }
+
+        private void RestoreQuestionAudioClips(AudioClip[][] clips)
+        {
+            if (clips == null || stories == null)
+                return;
+
+            int storyCount = Mathf.Min(stories.Length, clips.Length);
+            for (int storyIndex = 0; storyIndex < storyCount; storyIndex++)
+            {
+                LiteralStep[] steps = stories[storyIndex]?.literalSteps;
+                AudioClip[] stepClips = clips[storyIndex];
+                if (steps == null || stepClips == null)
+                    continue;
+
+                int stepCount = Mathf.Min(steps.Length, stepClips.Length);
+                for (int stepIndex = 0; stepIndex < stepCount; stepIndex++)
+                {
+                    if (steps[stepIndex] != null && stepClips[stepIndex] != null)
+                        steps[stepIndex].questionAudioClip = stepClips[stepIndex];
+                }
+            }
         }
 
         private void ShowFinalResult()

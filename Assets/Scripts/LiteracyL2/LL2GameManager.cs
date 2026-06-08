@@ -31,6 +31,10 @@ namespace LiteracyLevel2
             [TextArea(2, 4)]
             public string hintText;
 
+            [Header("Audio")]
+            [Tooltip("Audio untuk pertanyaan/step ini.")]
+            public AudioClip questionAudioClip;
+
             public LL2InteractionType interaction = LL2InteractionType.SelectOne;
             public LL2AnswerSlotType slotType = LL2AnswerSlotType.Auto;
 
@@ -170,6 +174,9 @@ namespace LiteracyLevel2
         [ContextMenu("Isi Template 5 Soal Level 2 Literasi")]
         public void FillDefaultQuestionTemplates()
         {
+            AudioClip[] existingStoryAudioClips = GetExistingStoryAudioClips();
+            AudioClip[][] existingStepAudioClips = GetExistingStepAudioClips();
+
             questions = new[]
             {
                 new StoryQuestion
@@ -303,6 +310,9 @@ namespace LiteracyLevel2
                     }
                 }
             };
+
+            RestoreStoryAudioClips(existingStoryAudioClips);
+            RestoreStepAudioClips(existingStepAudioClips);
         }
 
         public void StartGame()
@@ -340,6 +350,12 @@ namespace LiteracyLevel2
         {
             if (MaxQuestions == 0 || currentQuestionIndex >= MaxQuestions)
                 return;
+
+            if (stepActive && CurrentStep.questionAudioClip != null)
+            {
+                PlayAudio(CurrentStep.questionAudioClip);
+                return;
+            }
 
             PlayAudio(CurrentQuestion.audioClip);
         }
@@ -454,6 +470,8 @@ namespace LiteracyLevel2
                 );
                 uiManager.SetCheckButtonInteractable(false);
             }
+
+            PlayAudio(CurrentStep.questionAudioClip);
         }
 
         private void TryToggleAnswerObject(Vector2 screenPosition)
@@ -655,6 +673,73 @@ namespace LiteracyLevel2
 
             audioSource.Stop();
             audioSource.PlayOneShot(clip);
+        }
+
+        private AudioClip[] GetExistingStoryAudioClips()
+        {
+            if (questions == null)
+                return null;
+
+            AudioClip[] clips = new AudioClip[questions.Length];
+            for (int questionIndex = 0; questionIndex < questions.Length; questionIndex++)
+                clips[questionIndex] = questions[questionIndex]?.audioClip;
+
+            return clips;
+        }
+
+        private AudioClip[][] GetExistingStepAudioClips()
+        {
+            if (questions == null)
+                return null;
+
+            AudioClip[][] clips = new AudioClip[questions.Length][];
+            for (int questionIndex = 0; questionIndex < questions.Length; questionIndex++)
+            {
+                QuestionStep[] steps = questions[questionIndex]?.steps;
+                if (steps == null)
+                    continue;
+
+                clips[questionIndex] = new AudioClip[steps.Length];
+                for (int stepIndex = 0; stepIndex < steps.Length; stepIndex++)
+                    clips[questionIndex][stepIndex] = steps[stepIndex]?.questionAudioClip;
+            }
+
+            return clips;
+        }
+
+        private void RestoreStoryAudioClips(AudioClip[] clips)
+        {
+            if (clips == null || questions == null)
+                return;
+
+            int questionCount = Mathf.Min(questions.Length, clips.Length);
+            for (int questionIndex = 0; questionIndex < questionCount; questionIndex++)
+            {
+                if (questions[questionIndex] != null && clips[questionIndex] != null)
+                    questions[questionIndex].audioClip = clips[questionIndex];
+            }
+        }
+
+        private void RestoreStepAudioClips(AudioClip[][] clips)
+        {
+            if (clips == null || questions == null)
+                return;
+
+            int questionCount = Mathf.Min(questions.Length, clips.Length);
+            for (int questionIndex = 0; questionIndex < questionCount; questionIndex++)
+            {
+                QuestionStep[] steps = questions[questionIndex]?.steps;
+                AudioClip[] stepClips = clips[questionIndex];
+                if (steps == null || stepClips == null)
+                    continue;
+
+                int stepCount = Mathf.Min(steps.Length, stepClips.Length);
+                for (int stepIndex = 0; stepIndex < stepCount; stepIndex++)
+                {
+                    if (steps[stepIndex] != null && stepClips[stepIndex] != null)
+                        steps[stepIndex].questionAudioClip = stepClips[stepIndex];
+                }
+            }
         }
 
         private string BuildHighlightedSentence(string sentence, string connectorWord)

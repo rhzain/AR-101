@@ -5667,76 +5667,86 @@ MonoBehaviour:
     steps:
     - questionText: Siapa yang pergi ke kamar?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: ae3e85914366df449a6b971a2b25ac3e, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: boy
       distractorObjectIds: girl
     - questionText: Apa yang Faris pelajari?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 8a395d02f4425b14b8929fec8e5d231c, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: math
       distractorObjectIds: books
   - sentenceText: Haris pulang ke rumah untuk makan nasi.
     connectorWord: untuk
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 4899d9592f2ca4842ac37b7aa5aed89d, type: 3}
     steps:
     - questionText: Ke mana Haris pulang?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 4b111deb439443b47b3225cc44ec1cd8, type: 3}
       interaction: 0
       slotType: 3
       correctObjectIds: house
       distractorObjectIds: shop
     - questionText: Apa yang Haris makan?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 26254a1e1d0cf404eab28c3cf4fe0415, type: 3}
       interaction: 0
       slotType: 1
       correctObjectIds: rice
       distractorObjectIds: donut
   - sentenceText: Evan tidur di rumah dan bermain bola di siang hari.
     connectorWord: dan
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 12c4faf6f12fa2249b209f61874ec481, type: 3}
     steps:
     - questionText: Di mana Evan tidur?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: a6689c28f143aa74d86f464d3dd00bf8, type: 3}
       interaction: 0
       slotType: 3
       correctObjectIds: house
       distractorObjectIds: shop
     - questionText: Apa yang Evan mainkan?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: cb4f32ad596ba4b47a6d5334f48f2caf, type: 3}
       interaction: 0
       slotType: 1
       correctObjectIds: ball
       distractorObjectIds: lollipop
   - sentenceText: Lina menemani ibu untuk belanja di pasar.
     connectorWord: untuk
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 42c5d0e195fd5024abaf7b8a31b0b72d, type: 3}
     steps:
     - questionText: Siapa yang Lina temani?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 2c8769becb398b64dba4b9b47f4a6b52, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: mother
       distractorObjectIds: father
     - questionText: Ke mana Lina pergi?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: c725ffd48f77d1447b779a7c82b752f4, type: 3}
       interaction: 0
       slotType: 3
       correctObjectIds: market
       distractorObjectIds: house
   - sentenceText: Ibu pergi ke pasar membeli ayam, kubis, dan ikan.
     connectorWord: dan
-    audioClip: {fileID: 0}
+    audioClip: {fileID: 8300000, guid: 89a0ebd5dc1285c469f54ed02efeec15, type: 3}
     steps:
     - questionText: Siapa yang pergi ke pasar?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 75811b1840c61cf4eba8899b84d1d7fb, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: mother
       distractorObjectIds: father
     - questionText: Apa saja yang Ibu beli?
       hintText: Pilih semua jawaban yang benar, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 2a1330e0ddba36b4cb2ba34b26f5b37d, type: 3}
       interaction: 1
       slotType: 1
       correctObjectIds: chicken,cabbage,fish

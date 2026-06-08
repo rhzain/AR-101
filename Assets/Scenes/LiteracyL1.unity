@@ -5402,12 +5402,45 @@ MonoBehaviour:
   wordCardDepth: 0.12
   itemGap: 0.015
   audioSource: {fileID: 0}
-  instruksiSusunHurufClip: {fileID: 8300000, guid: ea2d8bd26f6565749a241968479cdef9, type: 3}
-  instruksiSusunKalimatClip: {fileID: 8300000, guid: d9815ce5bb0d50c478e5737bdedf02b8, type: 3}
+  instruksiSusunHurufClip: {fileID: 8300000, guid: 76b9b2d874847f24684c56bcd02dec0f, type: 3}
+  instruksiSusunKalimatClip: {fileID: 8300000, guid: 297b6c7d5defaa34d9f30ac133ac52e2, type: 3}
+  openingToFirstQuestionAudioDelay: 0.5
   jawabanBenarClip: {fileID: 8300000, guid: efa86330a9b282c48b3716c7088968c0, type: 3}
   jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
   levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
   levelIncompleteClip: {fileID: 8300000, guid: 44093f4385473084ebf3379c9e015384, type: 3}
+  spellQuestions:
+  - questionAudioClip: {fileID: 8300000, guid: 629b8ce1d73cde74fb2e2d1ab3c04cbf, type: 3}
+    answer: APEL
+    isWord: 1
+  - questionAudioClip: {fileID: 8300000, guid: c5f4f2c91e5672142b6b1e62cb690fc0, type: 3}
+    answer: BOLA
+    isWord: 1
+  - questionAudioClip: {fileID: 8300000, guid: 549d878fda79f374aa7bdc2c77131e17, type: 3}
+    answer: BUDI
+    isWord: 1
+  - questionAudioClip: {fileID: 8300000, guid: 3ff0d52b758f7934b944b2d08de2e036, type: 3}
+    answer: PASAR
+    isWord: 1
+  - questionAudioClip: {fileID: 8300000, guid: 7e6165b96b68c2746a3e5ac4f438316b, type: 3}
+    answer: BINTANG
+    isWord: 1
+  sentenceQuestions:
+  - questionAudioClip: {fileID: 8300000, guid: 25ca04be460ef4a448f4c63b363b86b9, type: 3}
+    answer: BUDI PERGI KE PASAR
+    isWord: 0
+  - questionAudioClip: {fileID: 8300000, guid: 940d828ed2816024c976d60a63f18a28, type: 3}
+    answer: AGUS BERMAIN BOLA
+    isWord: 0
+  - questionAudioClip: {fileID: 8300000, guid: 6c20b15f2f07f5f4f82ab26890af9801, type: 3}
+    answer: IBU MEMBELI IKAN
+    isWord: 0
+  - questionAudioClip: {fileID: 8300000, guid: ab7224ff3ea2a5946a13cf936adbe75a, type: 3}
+    answer: AYAH TIDUR DI KAMAR
+    isWord: 0
+  - questionAudioClip: {fileID: 8300000, guid: 23020df08de0bd549889ceab19665b57, type: 3}
+    answer: KAKAK MAKAN NASI
+    isWord: 0
   progressSubject: Literacy
   progressLevelNumber: 1
   minimumCorrectToPass: 8

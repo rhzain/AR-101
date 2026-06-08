@@ -5847,6 +5847,8 @@ MonoBehaviour:
   selectedScaleMultiplier: 1.05
   useMaterialSelectionEffect: 1
   audioSource: {fileID: 0}
+  arrangeStoryInstructionClip: {fileID: 8300000, guid: 33526816a08a698439f873f02fb6f686, type: 3}
+  objectQuestionInstructionClip: {fileID: 8300000, guid: 7442ba100e60cce40bcea99cade57d17, type: 3}
   jawabanBenarClip: {fileID: 8300000, guid: efa86330a9b282c48b3716c7088968c0, type: 3}
   jawabanSalahClip: {fileID: 8300000, guid: 3fb5aaa7dea91fc4ea3d41b5acc60794, type: 3}
   levelCompleteClip: {fileID: 8300000, guid: d3a9123cf5e45ef469b3663d74543b7f, type: 3}
@@ -5861,7 +5863,6 @@ MonoBehaviour:
       membeli kain merah.
 
       Kain itu akan dibuat menjadi baju.'
-    audioClip: {fileID: 0}
     orderedSentences:
     - Ibu pergi ke pasar kain.
     - Ibu melihat kain merah dan kain biru.
@@ -5870,24 +5871,28 @@ MonoBehaviour:
     literalSteps:
     - questionText: Ibu pergi ke mana?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 3337653922a295743b904d26b20efcf6, type: 3}
       interaction: 0
       slotType: 3
       correctObjectIds: market
       distractorObjectIds: house,shop
     - questionText: Ibu melihat kain warna apa saja?
       hintText: Pilih semua jawaban yang benar, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: db8079cd129027347bc166e18828c798, type: 3}
       interaction: 1
       slotType: 2
       correctObjectIds: cloth_red,cloth_blue
       distractorObjectIds: cloth_yellow
     - questionText: Ibu membeli kain warna apa?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 92eb5e1bf8ccf314689dc2728d05daaa, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: cloth_red
       distractorObjectIds: cloth_blue
     - questionText: Kain itu akan dibuat menjadi apa?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: c402e51d0ffa5b942a668d8cf80a2756, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: clothes_red
@@ -5900,7 +5905,6 @@ MonoBehaviour:
       mengambil buku itu lalu membaca.
 
       Sambil membaca, Budi makan donat.'
-    audioClip: {fileID: 0}
     orderedSentences:
     - Budi berada di rumah.
     - Ia melihat buku di meja.
@@ -5909,24 +5913,28 @@ MonoBehaviour:
     literalSteps:
     - questionText: Budi berada di mana?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 4397ad3e1a2eeb64f9de7a477bf355d0, type: 3}
       interaction: 0
       slotType: 3
       correctObjectIds: house
       distractorObjectIds: shop,market
     - questionText: Budi melihat apa di meja?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: 90632296fb8de484e82be4e39970dd6e, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: books
       distractorObjectIds: ball,lollipop
     - questionText: Apa yang Budi ambil?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: ce2de88a94520ee4d8fb3f9e5d02d87d, type: 3}
       interaction: 0
       slotType: 2
       correctObjectIds: books
       distractorObjectIds: ball,donut
     - questionText: Sambil membaca, Budi makan apa?
       hintText: Pilih jawabanmu, lalu tekan Cek Jawaban.
+      questionAudioClip: {fileID: 8300000, guid: a895b7df7a75a93499347ba6685aa48d, type: 3}
       interaction: 0
       slotType: 1
       correctObjectIds: donut

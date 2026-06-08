@@ -17,15 +17,6 @@ namespace MathLevel3
     public class ML3GameManager : MonoBehaviour
     {
         [System.Serializable]
-        public class HintInstructionAudio
-        {
-            [TextArea(2, 4)]
-            public string hintText;
-
-            public AudioClip audioClip;
-        }
-
-        [System.Serializable]
         public class SlotSetup
         {
             public ML3SlotId slot = ML3SlotId.Left;
@@ -44,6 +35,10 @@ namespace MathLevel3
 
             [TextArea(2, 4)]
             public string hintText;
+
+            [Header("Audio")]
+            [Tooltip("Audio instruksi untuk langkah ini. Isi 2 clip per soal lewat masing-masing step.")]
+            public AudioClip instructionAudioClip;
 
             public ML3StepInteraction interaction = ML3StepInteraction.DragItems;
             public ML3SlotId targetSlot = ML3SlotId.Left;
@@ -99,8 +94,6 @@ namespace MathLevel3
         public AudioClip levelCompleteClip;
         [Tooltip("Audio yang diputar saat level selesai tetapi pemain belum lulus.")]
         public AudioClip levelIncompleteClip;
-        [Tooltip("Audio instruksi yang dicocokkan dengan hintText setiap langkah.")]
-        public HintInstructionAudio[] hintInstructionAudios;
 
         [Header("Data Soal")]
         [Tooltip("Aktifkan agar 5 soal Level 3 dibuat dari kode setiap StartGame.")]
@@ -183,6 +176,8 @@ namespace MathLevel3
         [ContextMenu("Isi Template 5 Soal Level 3")]
         public void FillDefaultQuestionTemplates()
         {
+            AudioClip[][] existingInstructionAudioClips = GetExistingInstructionAudioClips();
+
             questions = new[]
             {
                 new StoryQuestion
@@ -366,6 +361,8 @@ namespace MathLevel3
                     }
                 }
             };
+
+            RestoreInstructionAudioClips(existingInstructionAudioClips);
         }
 
         private bool ShouldRefreshCodeQuestions()
@@ -555,7 +552,7 @@ namespace MathLevel3
                 );
             }
 
-            PlayHintInstructionAudio(CurrentStep.hintText);
+            PlayInstructionAudio(CurrentStep);
         }
 
         private void TrySelectSlot(Vector2 screenPosition)
@@ -729,27 +726,54 @@ namespace MathLevel3
             return GetSlotCount(step.secondaryTargetSlot) == step.secondaryTargetCountAnswer;
         }
 
-        private void PlayHintInstructionAudio(string hintText)
+        private void PlayInstructionAudio(QuestionStep step)
         {
-            PlayAudio(GetHintInstructionClip(hintText), true);
+            if (step == null)
+                return;
+
+            PlayAudio(step.instructionAudioClip, true);
         }
 
-        private AudioClip GetHintInstructionClip(string hintText)
+        private AudioClip[][] GetExistingInstructionAudioClips()
         {
-            if (hintInstructionAudios == null || string.IsNullOrWhiteSpace(hintText))
+            if (questions == null)
                 return null;
 
-            string normalizedHint = NormalizeAnswer(hintText);
-            foreach (HintInstructionAudio hintAudio in hintInstructionAudios)
+            AudioClip[][] clips = new AudioClip[questions.Length][];
+            for (int questionIndex = 0; questionIndex < questions.Length; questionIndex++)
             {
-                if (hintAudio == null || hintAudio.audioClip == null || string.IsNullOrWhiteSpace(hintAudio.hintText))
+                QuestionStep[] steps = questions[questionIndex]?.steps;
+                if (steps == null)
                     continue;
 
-                if (NormalizeAnswer(hintAudio.hintText) == normalizedHint)
-                    return hintAudio.audioClip;
+                clips[questionIndex] = new AudioClip[steps.Length];
+                for (int stepIndex = 0; stepIndex < steps.Length; stepIndex++)
+                    clips[questionIndex][stepIndex] = steps[stepIndex]?.instructionAudioClip;
             }
 
-            return null;
+            return clips;
+        }
+
+        private void RestoreInstructionAudioClips(AudioClip[][] clips)
+        {
+            if (clips == null || questions == null)
+                return;
+
+            int questionCount = Mathf.Min(questions.Length, clips.Length);
+            for (int questionIndex = 0; questionIndex < questionCount; questionIndex++)
+            {
+                QuestionStep[] steps = questions[questionIndex]?.steps;
+                AudioClip[] stepClips = clips[questionIndex];
+                if (steps == null || stepClips == null)
+                    continue;
+
+                int stepCount = Mathf.Min(steps.Length, stepClips.Length);
+                for (int stepIndex = 0; stepIndex < stepCount; stepIndex++)
+                {
+                    if (steps[stepIndex] != null && stepClips[stepIndex] != null)
+                        steps[stepIndex].instructionAudioClip = stepClips[stepIndex];
+                }
+            }
         }
 
         private void PlayAudio(AudioClip clip, bool stopCurrentAudio = false)
