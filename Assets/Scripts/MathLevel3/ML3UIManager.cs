@@ -24,6 +24,14 @@ namespace MathLevel3
         public GameObject answerInputContainer;
         public TMP_InputField answerInput;
 
+        [Header("Jawaban Ya/Tidak")]
+        [Tooltip("Container tombol Ya dan Tidak. Akan muncul hanya untuk soal jawaban ya/tidak.")]
+        public GameObject yesNoButtonContainer;
+        public Button yesButton;
+        public Button noButton;
+        public string yesAnswerValue = "ya";
+        public string noAnswerValue = "tidak";
+
         [Header("Count Label")]
         [Tooltip("Optional. Isi parent/group count kalau mau label jumlah ikut hide/show bareng.")]
         public GameObject targetCountContainer;
@@ -45,6 +53,8 @@ namespace MathLevel3
         private ML3GameManager gameManager;
         private ML3Slot activeTargetSlot;
         private bool showTargetCount;
+        private bool currentUsesYesNoButtons;
+        private string selectedButtonAnswer = "";
         private string currentHintText;
         private Coroutine restoreHintCoroutine;
 
@@ -64,6 +74,14 @@ namespace MathLevel3
                 });
                 submitButton.gameObject.SetActive(false);
             }
+
+            if (yesButton != null)
+                yesButton.onClick.AddListener(SubmitYesAnswer);
+
+            if (noButton != null)
+                noButton.onClick.AddListener(SubmitNoAnswer);
+
+            SetYesNoButtonsVisible(false);
 
             ShowHeaderOnly();
         }
@@ -107,8 +125,10 @@ namespace MathLevel3
             StopRestoreHintCoroutine();
 
             bool needsTextAnswer = StepNeedsTextAnswer(step);
+            currentUsesYesNoButtons = StepUsesYesNoButtons(step);
             bool needsSubmitButton = step.interaction != ML3StepInteraction.SelectSlot;
             showTargetCount = step.validateTargetCount && step.interaction != ML3StepInteraction.SelectSlot && targetSlot != null;
+            selectedButtonAnswer = "";
 
             SetTargetCountVisible(showTargetCount);
             if (targetCountText != null)
@@ -117,14 +137,21 @@ namespace MathLevel3
             if (answerInput != null)
                 answerInput.text = "";
 
-            SetAnswerInputVisible(needsTextAnswer);
+            SetAnswerInputVisible(needsTextAnswer && !currentUsesYesNoButtons);
+            SetYesNoButtonsVisible(currentUsesYesNoButtons);
 
             if (submitButton != null)
+            {
                 submitButton.gameObject.SetActive(needsSubmitButton);
+                submitButton.interactable = needsSubmitButton && !currentUsesYesNoButtons;
+            }
         }
 
         public string GetAnswer()
         {
+            if (currentUsesYesNoButtons)
+                return selectedButtonAnswer;
+
             if (answerInput == null)
             {
                 Debug.LogWarning("[ML3UIManager] Answer Input belum di-assign di Inspector.");
@@ -132,6 +159,16 @@ namespace MathLevel3
             }
 
             return answerInput != null ? answerInput.text : "";
+        }
+
+        public void SubmitYesAnswer()
+        {
+            SubmitButtonAnswer(yesAnswerValue);
+        }
+
+        public void SubmitNoAnswer()
+        {
+            SubmitButtonAnswer(noAnswerValue);
         }
 
         public void ShowFeedback(
@@ -155,7 +192,7 @@ namespace MathLevel3
                 }
                 else if (!answerCorrect)
                 {
-                    feedbackText.text = $"Jumlah sudah tepat, tapi jawaban teks belum tepat. Jawaban: {FormatAnswer(correctAnswer)}.";
+                    feedbackText.text = $"Jumlah sudah tepat, tapi pilihan jawaban belum tepat. Jawaban: {FormatAnswer(correctAnswer)}.";
                 }
                 else
                 {
@@ -169,7 +206,18 @@ namespace MathLevel3
                 ScheduleHintRestore();
 
             if (submitButton != null)
-                submitButton.gameObject.SetActive(!isCorrect);
+            {
+                if (currentUsesYesNoButtons)
+                {
+                    submitButton.gameObject.SetActive(true);
+                    submitButton.interactable = false;
+                }
+                else
+                {
+                    submitButton.gameObject.SetActive(!isCorrect);
+                    submitButton.interactable = !isCorrect;
+                }
+            }
         }
 
         public void ShowSelectionFeedback(bool isCorrect, string correctSlotLabel, string selectedSlotLabel)
@@ -269,9 +317,23 @@ namespace MathLevel3
                 answerInput.text = "";
 
             SetAnswerInputVisible(false);
+            SetYesNoButtonsVisible(false);
+            currentUsesYesNoButtons = false;
+            selectedButtonAnswer = "";
 
             if (submitButton != null)
+            {
                 submitButton.gameObject.SetActive(false);
+                submitButton.interactable = true;
+            }
+        }
+
+        private void SubmitButtonAnswer(string answer)
+        {
+            selectedButtonAnswer = answer;
+
+            if (gameManager != null)
+                gameManager.SubmitAnswer();
         }
 
         private void SetAnswerInputVisible(bool isVisible)
@@ -301,10 +363,49 @@ namespace MathLevel3
                 targetCountText.gameObject.SetActive(isVisible);
         }
 
+        private void SetYesNoButtonsVisible(bool isVisible)
+        {
+            if (yesNoButtonContainer != null)
+            {
+                yesNoButtonContainer.SetActive(isVisible);
+                return;
+            }
+
+            if (yesButton != null)
+                yesButton.gameObject.SetActive(isVisible);
+
+            if (noButton != null)
+                noButton.gameObject.SetActive(isVisible);
+        }
+
         private bool StepNeedsTextAnswer(ML3GameManager.QuestionStep step)
         {
             return step.interaction == ML3StepInteraction.TextAnswer
                 || (step.interaction == ML3StepInteraction.ObserveOnly && !string.IsNullOrWhiteSpace(step.answer));
+        }
+
+        private bool StepUsesYesNoButtons(ML3GameManager.QuestionStep step)
+        {
+            if (!StepNeedsTextAnswer(step) || string.IsNullOrWhiteSpace(step.answer))
+                return false;
+
+            string[] acceptedAnswers = step.answer.Split(new[] { '|', '/', ',' }, System.StringSplitOptions.RemoveEmptyEntries);
+            foreach (string acceptedAnswer in acceptedAnswers)
+            {
+                string normalizedAnswer = acceptedAnswer.Trim().ToLowerInvariant();
+                if (normalizedAnswer == "ya"
+                    || normalizedAnswer == "iya"
+                    || normalizedAnswer == "y"
+                    || normalizedAnswer == "tidak"
+                    || normalizedAnswer == "nggak"
+                    || normalizedAnswer == "enggak"
+                    || normalizedAnswer == "no")
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private void ShowHeaderOnly()

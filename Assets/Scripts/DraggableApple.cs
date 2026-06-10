@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
@@ -8,6 +9,8 @@ public class DraggableApple : MonoBehaviour
     private Camera cam;
     private Rigidbody rb;
     private Collider ownCollider;
+    private Collider[] ownColliders;
+    private readonly List<Collider> ignoredAppleColliders = new List<Collider>();
 
     private bool isDragging;
     private Vector3 dragOffset;
@@ -22,6 +25,13 @@ public class DraggableApple : MonoBehaviour
     [Tooltip("Offset tinggi apel di atas permukaan meja saat di-drag")]
     public float dragHoverHeight = 0.05f;
 
+    [Header("Drag Physics")]
+    [Tooltip("Cegah apel yang sedang di-drag mendorong apel lain sampai terlempar.")]
+    public bool ignoreAppleCollisionsWhileDragging = true;
+
+    [Tooltip("Jarak kecil untuk menggeser apel keluar dari overlap sebelum collision dinyalakan kembali.")]
+    public float overlapResolvePadding = 0.01f;
+
     [Header("Aturan Drop Zone")]
     [Tooltip("Kalau aktif, apel langsung hilang saat dilepas di luar DropZone.")]
     public bool destroyWhenDroppedOutsideDropZone = false;
@@ -34,6 +44,7 @@ public class DraggableApple : MonoBehaviour
         cam = Camera.main;
         rb = GetComponent<Rigidbody>();
         ownCollider = GetComponent<Collider>();
+        ownColliders = GetComponentsInChildren<Collider>();
     }
 
     void Update()
@@ -83,9 +94,7 @@ public class DraggableApple : MonoBehaviour
         Vector3 hitPoint = ray.GetPoint(enter);
         dragOffset = transform.position - hitPoint;
 
-        rb.isKinematic = true;
-        isDragging = true;
-        AnyAppleDragging = true;
+        BeginDragPhysics();
     }
 
     private void Drag(Vector2 screenPos)
@@ -106,10 +115,13 @@ public class DraggableApple : MonoBehaviour
 
         if (destroyWhenDroppedOutsideDropZone && !IsInsideDropZone())
         {
+            RestoreIgnoredAppleCollisions();
             Destroy(gameObject);
             return;
         }
 
+        ResolveAppleOverlaps();
+        RestoreIgnoredAppleCollisions();
         rb.isKinematic = false;
     }
 
@@ -121,6 +133,7 @@ public class DraggableApple : MonoBehaviour
     {
         isDragging = false;
         AnyAppleDragging = false;
+        RestoreIgnoredAppleCollisions();
     }
 
     /// <summary>
@@ -145,8 +158,132 @@ public class DraggableApple : MonoBehaviour
             dragOffset = Vector3.zero;
         }
 
-        rb.isKinematic = true;
+        BeginDragPhysics();
+    }
+
+    private void BeginDragPhysics()
+    {
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
+        }
+
         isDragging = true;
+        AnyAppleDragging = true;
+        IgnoreAppleCollisions();
+    }
+
+    private void IgnoreAppleCollisions()
+    {
+        if (!ignoreAppleCollisionsWhileDragging || ownColliders == null)
+            return;
+
+        RestoreIgnoredAppleCollisions();
+
+        GameObject[] apples = GameObject.FindGameObjectsWithTag("Apple");
+        foreach (GameObject apple in apples)
+        {
+            if (apple == null || apple == gameObject)
+                continue;
+
+            Collider[] appleColliders = apple.GetComponentsInChildren<Collider>();
+            foreach (Collider appleCollider in appleColliders)
+            {
+                if (appleCollider == null || !appleCollider.enabled)
+                    continue;
+
+                bool ignoredAnyPair = false;
+                foreach (Collider own in ownColliders)
+                {
+                    if (own == null || !own.enabled || own == appleCollider)
+                        continue;
+
+                    Physics.IgnoreCollision(own, appleCollider, true);
+                    ignoredAnyPair = true;
+                }
+
+                if (ignoredAnyPair && !ignoredAppleColliders.Contains(appleCollider))
+                    ignoredAppleColliders.Add(appleCollider);
+            }
+        }
+    }
+
+    private void RestoreIgnoredAppleCollisions()
+    {
+        if (ownColliders == null || ignoredAppleColliders.Count == 0)
+            return;
+
+        foreach (Collider appleCollider in ignoredAppleColliders)
+        {
+            if (appleCollider == null)
+                continue;
+
+            foreach (Collider own in ownColliders)
+            {
+                if (own == null || own == appleCollider)
+                    continue;
+
+                Physics.IgnoreCollision(own, appleCollider, false);
+            }
+        }
+
+        ignoredAppleColliders.Clear();
+    }
+
+    private void ResolveAppleOverlaps()
+    {
+        if (ownCollider == null || ownCollider.isTrigger)
+            return;
+
+        const int maxIterations = 5;
+
+        for (int i = 0; i < maxIterations; i++)
+        {
+            bool moved = false;
+            Physics.SyncTransforms();
+
+            GameObject[] apples = GameObject.FindGameObjectsWithTag("Apple");
+            foreach (GameObject apple in apples)
+            {
+                if (apple == null || apple == gameObject)
+                    continue;
+
+                Collider[] appleColliders = apple.GetComponentsInChildren<Collider>();
+                foreach (Collider appleCollider in appleColliders)
+                {
+                    if (appleCollider == null || !appleCollider.enabled || appleCollider.isTrigger)
+                        continue;
+
+                    if (!Physics.ComputePenetration(
+                        ownCollider,
+                        ownCollider.transform.position,
+                        ownCollider.transform.rotation,
+                        appleCollider,
+                        appleCollider.transform.position,
+                        appleCollider.transform.rotation,
+                        out Vector3 direction,
+                        out float distance))
+                    {
+                        continue;
+                    }
+
+                    Vector3 horizontalDirection = Vector3.ProjectOnPlane(direction, Vector3.up);
+                    if (horizontalDirection.sqrMagnitude < 0.0001f)
+                        horizontalDirection = Vector3.ProjectOnPlane(transform.position - appleCollider.transform.position, Vector3.up);
+
+                    if (horizontalDirection.sqrMagnitude < 0.0001f)
+                        horizontalDirection = transform.right;
+
+                    transform.position += horizontalDirection.normalized * (distance + overlapResolvePadding);
+                    moved = true;
+                }
+            }
+
+            if (!moved)
+                break;
+        }
     }
 
     private bool IsInsideDropZone()
